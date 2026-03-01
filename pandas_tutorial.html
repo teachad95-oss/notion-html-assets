@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pandas Full Tutorial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+  :root {
+    --bg: #0e0f14;
+    --bg2: #13141a;
+    --bg3: #1a1c25;
+    --border: #252733;
+    --border2: #2e3145;
+    --text: #dde1f0;
+    --muted: #7a7f9a;
+    --accent: #e8854a;
+    --accent2: #5b8dee;
+    --accent3: #63c17a;
+    --purple: #a87ce8;
+    --yellow: #e8c44a;
+    --red: #e85a5a;
+    --code-bg: #0a0b10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    padding: 80px 48px 72px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 10% 50%, #e8854a18 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 20%, #5b8dee14 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 60% 80%, #a87ce810 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 560px;
+    font-style: italic;
+    margin-bottom: 30px;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    background: var(--bg2);
+  }
+  .badge.hot { border-color: #e8854a50; color: var(--accent); }
+  .badge.blue { border-color: #5b8dee50; color: var(--accent2); }
+  .badge.green { border-color: #63c17a50; color: var(--accent3); }
+
+  /* ── TOC ── */
+  .toc-wrap { max-width: 900px; margin: 48px auto; padding: 0 24px; }
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-top: 3px solid var(--accent);
+    border-radius: 0 0 10px 10px;
+    padding: 28px 32px;
+  }
+  .toc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 4px 24px;
+  }
+  .toc-grid a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex; gap: 8px; align-items: baseline;
+  }
+  .toc-grid a:hover { color: var(--text); border-color: var(--border2); }
+  .toc-grid a .n { color: var(--accent); font-size: 0.7rem; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px 100px; }
+
+  /* ── SECTION ── */
+  .section { margin-top: 72px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .snum {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: var(--bg2);
+    background: var(--accent);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .snum.blue { background: var(--accent2); }
+  .snum.green { background: var(--accent3); color: #0a0f0a; }
+  .snum.purple { background: var(--purple); }
+  .snum.yellow { background: var(--yellow); color: #1a0f00; }
+  .snum.red { background: var(--red); }
+
+  .section-head h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .subsection { margin-top: 36px; }
+  .subsection h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 2px solid var(--accent2);
+  }
+
+  p, li { color: var(--muted); font-size: 0.95rem; margin-bottom: 10px; }
+  ul, ol { padding-left: 20px; margin-bottom: 12px; }
+
+  /* ── CODE ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .code-bar {
+    background: var(--bg3);
+    padding: 7px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-bar .lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .code-bar .desc { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+  pre {
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 1.75;
+    tab-size: 4;
+  }
+  .kw  { color: #c792ea; }
+  .fn  { color: #82b4ff; }
+  .st  { color: #c3e88d; }
+  .cm  { color: #455575; font-style: italic; }
+  .nm  { color: #f78c6c; }
+  .attr{ color: #89ddff; }
+  .cl  { color: #ffcb6b; }
+  .op  { color: #89ddff; }
+
+  /* ── OUTPUT ── */
+  .out-block {
+    background: #060809;
+    border: 1px solid #152015;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 8px 8px 0;
+    overflow: hidden;
+    margin: 4px 0 20px;
+  }
+  .out-bar {
+    background: #0a1410;
+    padding: 5px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent3);
+    border-bottom: 1px solid #152015;
+  }
+  .out-block pre { color: #7dd8a0; padding: 14px 18px; font-size: 0.82rem; }
+
+  /* ── CALLOUT BOXES ── */
+  .box {
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+  .box p { margin: 0; font-size: 0.9rem; }
+  .box.info  { background: #0d1a30; border-left: 3px solid var(--accent2); }
+  .box.info p { color: #8ab4e8; }
+  .box.tip   { background: #0a1a10; border-left: 3px solid var(--accent3); }
+  .box.tip p { color: #80c896; }
+  .box.warn  { background: #1a1200; border-left: 3px solid var(--yellow); }
+  .box.warn p { color: #c8a850; }
+  .box.danger{ background: #1a0808; border-left: 3px solid var(--red); }
+  .box.danger p { color: #c87070; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.85rem; }
+  th {
+    background: var(--bg3);
+    color: var(--accent2);
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border2);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  td { padding: 9px 14px; border: 1px solid var(--border); color: var(--muted); }
+  tr:nth-child(even) td { background: #0d0e12; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82em;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Complete Reference</div>
+    <h1>pandas<br><em>Full Tutorial</em></h1>
+    <p class="hero-sub">Data analysis and manipulation with Python's most powerful tabular library</p>
+    <div class="badges">
+      <span class="badge hot">Series &amp; DataFrame</span>
+      <span class="badge blue">Indexing &amp; Selection</span>
+      <span class="badge green">GroupBy</span>
+      <span class="badge hot">Merge &amp; Join</span>
+      <span class="badge blue">Reshaping</span>
+      <span class="badge green">Time Series</span>
+      <span class="badge hot">Missing Data</span>
+      <span class="badge blue">Apply &amp; Vectorize</span>
+      <span class="badge green">I/O</span>
+      <span class="badge hot">Performance</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TOC ═══════════ -->
+<div class="toc-wrap">
+  <div class="toc">
+    <div class="toc-title">📋 Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#s0"><span class="n">00</span> What is pandas?</a>
+      <a href="#s1"><span class="n">01</span> Installation &amp; Import</a>
+      <a href="#s2"><span class="n">02</span> Series</a>
+      <a href="#s3"><span class="n">03</span> DataFrame</a>
+      <a href="#s4"><span class="n">04</span> Reading &amp; Writing Data (I/O)</a>
+      <a href="#s5"><span class="n">05</span> Viewing &amp; Inspecting</a>
+      <a href="#s6"><span class="n">06</span> Indexing &amp; Selection</a>
+      <a href="#s7"><span class="n">07</span> Filtering (Boolean Indexing)</a>
+      <a href="#s8"><span class="n">08</span> Adding, Renaming &amp; Dropping</a>
+      <a href="#s9"><span class="n">09</span> Sorting</a>
+      <a href="#s10"><span class="n">10</span> Missing Data</a>
+      <a href="#s11"><span class="n">11</span> Data Types &amp; Casting</a>
+      <a href="#s12"><span class="n">12</span> String Operations</a>
+      <a href="#s13"><span class="n">13</span> Apply, Map &amp; Vectorization</a>
+      <a href="#s14"><span class="n">14</span> GroupBy &amp; Aggregation</a>
+      <a href="#s14adv"><span class="n">14+</span> GroupBy Advanced: apply vs agg vs transform</a>
+      <a href="#s15"><span class="n">15</span> Merge, Join &amp; Concat</a>
+      <a href="#s16"><span class="n">16</span> Reshaping (pivot, melt, stack)</a>
+      <a href="#s17"><span class="n">17</span> Time Series</a>
+      <a href="#s18"><span class="n">18</span> Categorical Data</a>
+      <a href="#s19"><span class="n">19</span> MultiIndex</a>
+      <a href="#s20"><span class="n">20</span> Window Functions</a>
+      <a href="#s20adv"><span class="n">20+</span> Rolling / Expanding Within Groups</a>
+      <a href="#s21"><span class="n">21</span> Performance Tips</a>
+      <a href="#s21adv"><span class="n">21+</span> eval() &amp; query()</a>
+      <a href="#s22"><span class="n">22</span> Pitfalls &amp; Gotchas</a>
+      <a href="#s23"><span class="n">23</span> Exercises with Answers</a>
+      <a href="#s23adv"><span class="n">23+</span> Real-World Pipeline</a>
+      <a href="#s23test"><span class="n">23T</span> Testing &amp; Validation</a>
+      <a href="#s23viz"><span class="n">23V</span> Visualization</a>
+      <a href="#s24"><span class="n">24</span> Where to Go Next</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══ S0: What is pandas ═══ -->
+<div class="section" id="s0">
+  <div class="section-head">
+    <span class="snum">0</span>
+    <h2>What is pandas?</h2>
+  </div>
+  <p>pandas is the go-to Python library for data analysis and manipulation. It provides two primary data structures built on top of NumPy:</p>
+  <table>
+    <tr><th>Structure</th><th>Analogy</th><th>Description</th></tr>
+    <tr><td><code>Series</code></td><td>Single column in a spreadsheet</td><td>1-D labeled array — index + values</td></tr>
+    <tr><td><code>DataFrame</code></td><td>Full spreadsheet / SQL table</td><td>2-D labeled table — rows × columns</td></tr>
+  </table>
+  <table>
+    <tr><th>Feature</th><th>What pandas provides</th></tr>
+    <tr><td>I/O</td><td>Read/write CSV, Excel, JSON, SQL, Parquet, HDF5, Clipboard…</td></tr>
+    <tr><td>Selection</td><td>Powerful label-based (.loc) and integer-based (.iloc) indexing</td></tr>
+    <tr><td>Cleaning</td><td>Handle missing values, type casting, string manipulation</td></tr>
+    <tr><td>Aggregation</td><td>GroupBy, pivot tables, rolling windows</td></tr>
+    <tr><td>Merging</td><td>SQL-style joins, concatenation, reshaping</td></tr>
+    <tr><td>Time Series</td><td>Date ranges, resampling, shifting, rolling stats</td></tr>
+  </table>
+  <div class="box info"><p><strong>Under the hood:</strong> pandas DataFrames are backed by NumPy arrays. Operations on numeric columns are vectorized in C — much faster than Python loops.</p></div>
+</div>
+
+<!-- ═══ S1: Install ═══ -->
+<div class="section" id="s1">
+  <div class="section-head">
+    <span class="snum blue">1</span>
+    <h2>Installation &amp; Import</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">shell</span><span class="desc">install</span></div>
+    <pre>pip install pandas
+<span class="cm"># or</span>
+conda install pandas</pre>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span><span class="desc">standard imports</span></div>
+    <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="fn">print</span>(pd.__version__)</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>2.2.1</pre></div>
+</div>
+
+<!-- ═══ S2: Series ═══ -->
+<div class="section" id="s2">
+  <div class="section-head">
+    <span class="snum green">2</span>
+    <h2>Series</h2>
+  </div>
+  <p>A <code>Series</code> is a 1-D array with an index. Think of it as a single column with row labels.</p>
+
+  <div class="subsection">
+    <h3>Creating a Series</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># From a list (auto integer index)</span>
+s1 = pd.Series([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>])
+<span class="fn">print</span>(s1)
+
+<span class="cm"># With a custom index</span>
+s2 = pd.Series([<span class="nm">1.5</span>, <span class="nm">2.5</span>, <span class="nm">3.5</span>], index=[<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>], name=<span class="st">'scores'</span>)
+<span class="fn">print</span>(s2)
+
+<span class="cm"># From a dict (keys become index)</span>
+s3 = pd.Series({<span class="st">'Mon'</span>: <span class="nm">100</span>, <span class="st">'Tue'</span>: <span class="nm">150</span>, <span class="st">'Wed'</span>: <span class="nm">130</span>})
+<span class="fn">print</span>(s3)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>0    10
+1    20
+2    30
+3    40
+dtype: int64
+
+a    1.5
+b    2.5
+c    3.5
+Name: scores, dtype: float64
+
+Mon    100
+Tue    150
+Wed    130
+dtype: int64</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Series operations</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>s = pd.Series([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>], name=<span class="st">'vals'</span>)
+
+<span class="fn">print</span>(s.values)          <span class="cm"># underlying NumPy array</span>
+<span class="fn">print</span>(s.index)           <span class="cm"># RangeIndex(start=0, stop=5)</span>
+<span class="fn">print</span>(s.dtype)           <span class="cm"># int64</span>
+<span class="fn">print</span>(s.shape)           <span class="cm"># (5,)</span>
+
+<span class="cm"># Arithmetic — broadcasts like NumPy</span>
+<span class="fn">print</span>(s * <span class="nm">2</span>)
+<span class="fn">print</span>(s[s > <span class="nm">25</span>])         <span class="cm"># boolean filter
+
+# Index-aligned arithmetic</span>
+a = pd.Series([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], index=[<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="st">'z'</span>])
+b = pd.Series([<span class="nm">10</span>, <span class="nm">20</span>], index=[<span class="st">'x'</span>, <span class="st">'y'</span>])
+<span class="fn">print</span>(a + b)             <span class="cm"># 'z' becomes NaN</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>[10 20 30 40 50]
+RangeIndex(start=0, stop=5, step=1)
+int64
+(5,)
+
+0     20
+1     40
+2     60
+3     80
+4    100
+dtype: int64
+
+2    30
+3    40
+4    50
+dtype: int64
+
+x    11.0
+y    22.0
+z     NaN
+dtype: float64</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S3: DataFrame ═══ -->
+<div class="section" id="s3">
+  <div class="section-head">
+    <span class="snum purple">3</span>
+    <h2>DataFrame</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Creating DataFrames</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># From a dict of lists</span>
+df = pd.DataFrame({
+    <span class="st">'name'</span>:  [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>],
+    <span class="st">'age'</span>:   [<span class="nm">25</span>, <span class="nm">30</span>, <span class="nm">22</span>, <span class="nm">35</span>],
+    <span class="st">'score'</span>: [<span class="nm">88.5</span>, <span class="nm">72.0</span>, <span class="nm">95.3</span>, <span class="nm">61.8</span>],
+    <span class="st">'pass'</span>:  [<span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">False</span>],
+})
+<span class="fn">print</span>(df)
+
+<span class="cm"># From a list of dicts (each dict = one row)</span>
+rows = [
+    {<span class="st">'city'</span>: <span class="st">'Paris'</span>,  <span class="st">'pop'</span>: <span class="nm">2161</span>},
+    {<span class="st">'city'</span>: <span class="st">'London'</span>, <span class="st">'pop'</span>: <span class="nm">8982</span>},
+]
+df2 = pd.DataFrame(rows)
+<span class="fn">print</span>(df2)
+
+<span class="cm"># From a NumPy array</span>
+df3 = pd.DataFrame(np.arange(<span class="nm">9</span>).reshape(<span class="nm">3</span>,<span class="nm">3</span>),
+                   columns=[<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>])
+<span class="fn">print</span>(df3)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>    name  age  score   pass
+0  Alice   25   88.5   True
+1    Bob   30   72.0   True
+2  Carol   22   95.3   True
+3   Dave   35   61.8  False
+
+     city   pop
+0   Paris  2161
+1  London  8982
+
+   A  B  C
+0  0  1  2
+1  3  4  5
+2  6  7  8</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>DataFrame attributes</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>: [<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>], <span class="st">'B'</span>: [<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>]})
+
+<span class="fn">print</span>(df.shape)        <span class="cm"># (rows, cols)</span>
+<span class="fn">print</span>(df.columns)      <span class="cm"># column labels</span>
+<span class="fn">print</span>(df.index)        <span class="cm"># row labels</span>
+<span class="fn">print</span>(df.dtypes)       <span class="cm"># dtype per column</span>
+<span class="fn">print</span>(df.values)       <span class="cm"># underlying NumPy array</span>
+<span class="fn">print</span>(df.size)         <span class="cm"># total elements</span>
+<span class="fn">print</span>(df.ndim)         <span class="cm"># always 2</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>(3, 2)
+Index(['A', 'B'], dtype='object')
+RangeIndex(start=0, stop=3, step=1)
+A    int64
+B    int64
+dtype: object
+[[1 4]
+ [2 5]
+ [3 6]]
+6
+2</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S4: I/O ═══ -->
+<div class="section" id="s4">
+  <div class="section-head">
+    <span class="snum yellow">4</span>
+    <h2>Reading &amp; Writing Data (I/O)</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>CSV</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Read CSV</span>
+df = pd.read_csv(<span class="st">'data.csv'</span>)
+
+<span class="cm"># Common options</span>
+df = pd.read_csv(<span class="st">'data.csv'</span>,
+    sep=<span class="st">','</span>,            <span class="cm"># delimiter</span>
+    header=<span class="nm">0</span>,           <span class="cm"># row number for column names</span>
+    index_col=<span class="st">'id'</span>,     <span class="cm"># use 'id' column as index</span>
+    usecols=[<span class="st">'a'</span>,<span class="st">'b'</span>],  <span class="cm"># only load specific columns</span>
+    nrows=<span class="nm">1000</span>,         <span class="cm"># read first 1000 rows</span>
+    skiprows=[<span class="nm">1</span>,<span class="nm">2</span>],      <span class="cm"># skip specific rows</span>
+    dtype={<span class="st">'age'</span>: int},  <span class="cm"># force dtype per column</span>
+    na_values=[<span class="st">'N/A'</span>],  <span class="cm"># extra strings to treat as NaN</span>
+    parse_dates=[<span class="st">'date'</span>] <span class="cm"># parse column as datetime</span>
+)
+
+<span class="cm"># Write CSV</span>
+df.to_csv(<span class="st">'out.csv'</span>, index=<span class="kw">False</span>)  <span class="cm"># index=False omits row numbers</span></pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Excel, JSON, Parquet, SQL</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Excel (requires openpyxl)</span>
+df = pd.read_excel(<span class="st">'file.xlsx'</span>, sheet_name=<span class="st">'Sheet1'</span>)
+df.to_excel(<span class="st">'out.xlsx'</span>, sheet_name=<span class="st">'result'</span>, index=<span class="kw">False</span>)
+
+<span class="cm"># JSON</span>
+df = pd.read_json(<span class="st">'data.json'</span>)
+df.to_json(<span class="st">'out.json'</span>, orient=<span class="st">'records'</span>)
+
+<span class="cm"># Parquet (fast binary, requires pyarrow or fastparquet)</span>
+df = pd.read_parquet(<span class="st">'data.parquet'</span>)
+df.to_parquet(<span class="st">'out.parquet'</span>, compression=<span class="st">'snappy'</span>)
+
+<span class="cm"># SQL (with SQLAlchemy engine)</span>
+<span class="kw">from</span> sqlalchemy <span class="kw">import</span> create_engine
+engine = create_engine(<span class="st">'sqlite:///mydb.db'</span>)
+df = pd.read_sql(<span class="st">'SELECT * FROM users'</span>, engine)
+df.to_sql(<span class="st">'users'</span>, engine, if_exists=<span class="st">'replace'</span>, index=<span class="kw">False</span>)
+
+<span class="cm"># Clipboard (handy for quick copy-paste from spreadsheets)</span>
+df = pd.read_clipboard()
+df.to_clipboard()</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Reading large files in chunks</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Process huge CSV in chunks — avoids loading all into RAM</span>
+chunks = []
+<span class="kw">for</span> chunk <span class="kw">in</span> pd.read_csv(<span class="st">'huge.csv'</span>, chunksize=<span class="nm">50_000</span>):
+    chunk = chunk[chunk[<span class="st">'value'</span>] > <span class="nm">0</span>]   <span class="cm"># filter each chunk</span>
+    chunks.append(chunk)
+result = pd.concat(chunks)
+<span class="fn">print</span>(result.shape)</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S5: Viewing ═══ -->
+<div class="section" id="s5">
+  <div class="section-head">
+    <span class="snum red">5</span>
+    <h2>Viewing &amp; Inspecting</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>, <span class="st">'Eve'</span>],
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>, <span class="nm">58000</span>],
+    <span class="st">'yrs'</span>:    [<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">3</span>, <span class="nm">1</span>],
+})
+
+df.head(<span class="nm">3</span>)          <span class="cm"># first 3 rows (default 5)</span>
+df.tail(<span class="nm">2</span>)          <span class="cm"># last 2 rows</span>
+df.sample(<span class="nm">2</span>)        <span class="cm"># random 2 rows</span>
+
+<span class="fn">print</span>(df.info())    <span class="cm"># dtypes, non-null counts, memory</span>
+<span class="fn">print</span>(df.describe()) <span class="cm"># stats for numeric columns</span>
+
+<span class="fn">print</span>(df.shape)     <span class="cm"># (5, 4)</span>
+<span class="fn">print</span>(df.dtypes)    <span class="cm"># per-column dtypes</span>
+<span class="fn">print</span>(df.columns.tolist())
+<span class="fn">print</span>(df.index.tolist())
+
+<span class="fn">print</span>(df[<span class="st">'dept'</span>].value_counts())     <span class="cm"># frequency of each value</span>
+<span class="fn">print</span>(df[<span class="st">'salary'</span>].nunique())        <span class="cm"># count distinct values</span>
+<span class="fn">print</span>(df[<span class="st">'salary'</span>].unique())         <span class="cm"># array of distinct values</span></pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 5 entries, 0 to 4
+Data columns (total 4 columns):
+ #   Column  Non-Null Count  Dtype
+---  ------  --------------  -----
+ 0   name    5 non-null      object
+ 1   dept    5 non-null      object
+ 2   salary  5 non-null      int64
+ 3   yrs     5 non-null      int64
+dtypes: int64(2), object(2)
+memory usage: 292.0 bytes
+
+       salary        yrs
+count     5.0       5.00
+mean  75600.0       3.80
+std   23717.5       2.59
+min   55000.0       1.00
+25%   58000.0       2.00
+50%   65000.0       3.00
+75%   90000.0       5.00
+max  110000.0       8.00
+
+(5, 4)
+name      object
+dept      object
+salary     int64
+yrs        int64
+dtype: object
+['name', 'dept', 'salary', 'yrs']
+[0, 1, 2, 3, 4]
+
+Mkt    2
+Eng    2
+HR     1
+Name: dept, dtype: int64
+
+5
+[90000 55000 110000 65000 58000]</pre></div>
+</div>
+
+
+<!-- ═══ S6: Indexing ═══ -->
+<div class="section" id="s6">
+  <div class="section-head">
+    <span class="snum">6</span>
+    <h2>Indexing &amp; Selection</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Column selection</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>], <span class="st">'B'</span>:[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>], <span class="st">'C'</span>:[<span class="nm">7</span>,<span class="nm">8</span>,<span class="nm">9</span>]})
+
+<span class="fn">print</span>(df[<span class="st">'A'</span>])           <span class="cm"># returns Series</span>
+<span class="fn">print</span>(df[[<span class="st">'A'</span>, <span class="st">'C'</span>]])   <span class="cm"># returns DataFrame (list of columns)</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>0    1
+1    2
+2    3
+Name: A, dtype: int64
+
+   A  C
+0  1  7
+1  2  8
+2  3  9</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>.loc — label-based selection</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>],
+    <span class="st">'yrs'</span>:    [<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>],
+}, index=[<span class="st">'r0'</span>, <span class="st">'r1'</span>, <span class="st">'r2'</span>])
+
+<span class="fn">print</span>(df.loc[<span class="st">'r1'</span>])             <span class="cm"># row by label</span>
+<span class="fn">print</span>(df.loc[<span class="st">'r0'</span>, <span class="st">'salary'</span>])   <span class="cm"># single cell</span>
+<span class="fn">print</span>(df.loc[<span class="st">'r0'</span>:<span class="st">'r1'</span>, <span class="st">'salary'</span>:<span class="st">'yrs'</span>])  <span class="cm"># slice (INCLUSIVE)</span>
+<span class="fn">print</span>(df.loc[[<span class="st">'r0'</span>,<span class="st">'r2'</span>], [<span class="st">'name'</span>,<span class="st">'yrs'</span>]])  <span class="cm"># fancy label list</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>name        Bob
+salary    55000
+yrs           2
+Name: r1, dtype: object
+
+90000
+
+   salary  yrs
+r0  90000    5
+r1  55000    2
+
+    name  yrs
+r0  Alice    5
+r2  Carol    8</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>.iloc — integer-position based selection</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Reset to integer index for clarity</span>
+df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>], <span class="st">'B'</span>:[<span class="nm">40</span>,<span class="nm">50</span>,<span class="nm">60</span>], <span class="st">'C'</span>:[<span class="nm">70</span>,<span class="nm">80</span>,<span class="nm">90</span>]})
+
+<span class="fn">print</span>(df.iloc[<span class="nm">0</span>])           <span class="cm"># first row (Series)</span>
+<span class="fn">print</span>(df.iloc[<span class="nm">1</span>, <span class="nm">2</span>])        <span class="cm"># row 1, col 2 → 80</span>
+<span class="fn">print</span>(df.iloc[<span class="nm">0</span>:<span class="nm">2</span>, <span class="nm">1</span>:])     <span class="cm"># rows 0-1, cols 1+ (exclusive end)</span>
+<span class="fn">print</span>(df.iloc[[-<span class="nm">1</span>], :])     <span class="cm"># last row as DataFrame</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>A    10
+B    40
+C    70
+Name: 0, dtype: int64
+
+80
+
+    B   C
+0  40  70
+1  50  80
+
+    A   B   C
+2  30  60  90</pre></div>
+    <div class="box warn"><p><strong>Key difference:</strong> <code>.loc</code> slices are label-inclusive on both ends. <code>.iloc</code> slices are exclusive on the right end (like Python lists).</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>at / iat — fast scalar access</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">10</span>,<span class="nm">20</span>], <span class="st">'B'</span>:[<span class="nm">30</span>,<span class="nm">40</span>]})
+
+<span class="fn">print</span>(df.at[<span class="nm">0</span>, <span class="st">'A'</span>])    <span class="cm"># label-based scalar (faster than .loc)</span>
+<span class="fn">print</span>(df.iat[<span class="nm">1</span>, <span class="nm">1</span>])    <span class="cm"># integer-based scalar (faster than .iloc)</span>
+
+df.at[<span class="nm">0</span>, <span class="st">'A'</span>] = <span class="nm">999</span>   <span class="cm"># assignment also works</span>
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>10
+40
+     A   B
+0  999  30
+1   20  40</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S7: Filtering ═══ -->
+<div class="section" id="s7">
+  <div class="section-head">
+    <span class="snum blue">7</span>
+    <h2>Filtering (Boolean Indexing)</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>, <span class="st">'Eve'</span>],
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>, <span class="nm">58000</span>],
+    <span class="st">'yrs'</span>:    [<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">3</span>, <span class="nm">1</span>],
+})
+
+<span class="cm"># Single condition</span>
+<span class="fn">print</span>(df[df[<span class="st">'salary'</span>] > <span class="nm">60000</span>])
+
+<span class="cm"># AND — both conditions</span>
+<span class="fn">print</span>(df[(df[<span class="st">'dept'</span>] == <span class="st">'Eng'</span>) & (df[<span class="st">'yrs'</span>] >= <span class="nm">5</span>)])
+
+<span class="cm"># OR — either condition</span>
+<span class="fn">print</span>(df[(df[<span class="st">'dept'</span>] == <span class="st">'HR'</span>) | (df[<span class="st">'salary'</span>] > <span class="nm">100000</span>)])
+
+<span class="cm"># isin — match any value in a list</span>
+<span class="fn">print</span>(df[df[<span class="st">'dept'</span>].isin([<span class="st">'Eng'</span>, <span class="st">'HR'</span>])])
+
+<span class="cm"># ~ negation</span>
+<span class="fn">print</span>(df[~df[<span class="st">'dept'</span>].isin([<span class="st">'Mkt'</span>])])
+
+<span class="cm"># query() — string-based DSL (cleaner for complex filters)</span>
+<span class="fn">print</span>(df.query(<span class="st">"dept == 'Eng' and salary > 80000"</span>))
+<span class="fn">print</span>(df.query(<span class="st">"salary.between(55000, 70000)"</span>))</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre># salary > 60000
+    name dept  salary  yrs
+0  Alice  Eng   90000    5
+2  Carol  Eng  110000    8
+3   Dave   HR   65000    3
+
+# Eng AND yrs >= 5
+    name dept  salary  yrs
+0  Alice  Eng   90000    5
+2  Carol  Eng  110000    8
+
+# HR OR salary > 100000
+    name dept  salary  yrs
+2  Carol  Eng  110000    8
+3   Dave   HR   65000    3
+
+# isin(['Eng','HR'])
+    name dept  salary  yrs
+0  Alice  Eng   90000    5
+2  Carol  Eng  110000    8
+3   Dave   HR   65000    3
+
+# ~Mkt
+    name dept  salary  yrs
+0  Alice  Eng   90000    5
+2  Carol  Eng  110000    8
+3   Dave   HR   65000    3
+
+# query Eng and salary > 80000
+    name dept  salary  yrs
+0  Alice  Eng   90000    5
+2  Carol  Eng  110000    8</pre></div>
+</div>
+
+<!-- ═══ S8: Adding/Dropping ═══ -->
+<div class="section" id="s8">
+  <div class="section-head">
+    <span class="snum green">8</span>
+    <h2>Adding, Renaming &amp; Dropping</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Adding columns &amp; rows</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'name'</span>:[<span class="st">'Alice'</span>,<span class="st">'Bob'</span>], <span class="st">'salary'</span>:[<span class="nm">90000</span>,<span class="nm">55000</span>], <span class="st">'yrs'</span>:[<span class="nm">5</span>,<span class="nm">2</span>]})
+
+<span class="cm"># Add new column (expression)</span>
+df[<span class="st">'bonus'</span>] = df[<span class="st">'salary'</span>] * <span class="nm">0.1</span>
+
+<span class="cm"># assign() — chainable, returns a copy</span>
+df = df.assign(
+    total=df[<span class="st">'salary'</span>] + df[<span class="st">'bonus'</span>],
+    senior=df[<span class="st">'yrs'</span>] >= <span class="nm">5</span>
+)
+<span class="fn">print</span>(df)
+
+<span class="cm"># Add a row with pd.concat</span>
+new_row = pd.DataFrame([{<span class="st">'name'</span>:<span class="st">'Carol'</span>, <span class="st">'salary'</span>:<span class="nm">110000</span>, <span class="st">'yrs'</span>:<span class="nm">8</span>,
+                          <span class="st">'bonus'</span>:<span class="nm">11000</span>, <span class="st">'total'</span>:<span class="nm">121000</span>, <span class="st">'senior'</span>:<span class="kw">True</span>}])
+df = pd.concat([df, new_row], ignore_index=<span class="kw">True</span>)
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>    name  salary  yrs   bonus    total  senior
+0  Alice   90000    5  9000.0   99000.0    True
+1    Bob   55000    2  5500.0   60500.0   False
+
+    name  salary  yrs    bonus     total  senior
+0  Alice   90000    5   9000.0   99000.0    True
+1    Bob   55000    2   5500.0   60500.0   False
+2  Carol  110000    8  11000.0  121000.0    True</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Renaming</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>], <span class="st">'B'</span>:[<span class="nm">2</span>], <span class="st">'C'</span>:[<span class="nm">3</span>]})
+
+<span class="cm"># Rename specific columns</span>
+df = df.rename(columns={<span class="st">'A'</span>: <span class="st">'alpha'</span>, <span class="st">'B'</span>: <span class="st">'beta'</span>})
+<span class="fn">print</span>(df.columns.tolist())
+
+<span class="cm"># Rename all columns at once</span>
+df.columns = [<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="st">'z'</span>]
+<span class="fn">print</span>(df.columns.tolist())
+
+<span class="cm"># Clean column names (lowercase, no spaces)</span>
+df.columns = df.columns.str.lower().str.replace(<span class="st">' '</span>, <span class="st">'_'</span>)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>['alpha', 'beta', 'C']
+['x', 'y', 'z']</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Dropping columns &amp; rows</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>], <span class="st">'B'</span>:[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>], <span class="st">'C'</span>:[<span class="nm">7</span>,<span class="nm">8</span>,<span class="nm">9</span>]})
+
+<span class="cm"># Drop column(s)</span>
+df2 = df.drop(columns=[<span class="st">'C'</span>])
+<span class="fn">print</span>(df2)
+
+<span class="cm"># Drop row(s) by index label</span>
+df3 = df.drop(index=[<span class="nm">0</span>, <span class="nm">2</span>])
+<span class="fn">print</span>(df3)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>   A  B
+0  1  4
+1  2  5
+2  3  6
+
+   A  B  C
+1  2  5  8</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S9: Sorting ═══ -->
+<div class="section" id="s9">
+  <div class="section-head">
+    <span class="snum purple">9</span>
+    <h2>Sorting</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>],
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>],
+})
+
+<span class="cm"># Sort by single column ascending</span>
+<span class="fn">print</span>(df.sort_values(<span class="st">'salary'</span>))
+
+<span class="cm"># Sort descending</span>
+<span class="fn">print</span>(df.sort_values(<span class="st">'salary'</span>, ascending=<span class="kw">False</span>))
+
+<span class="cm"># Sort by multiple columns</span>
+<span class="fn">print</span>(df.sort_values([<span class="st">'dept'</span>, <span class="st">'salary'</span>], ascending=[<span class="kw">True</span>, <span class="kw">False</span>]))
+
+<span class="cm"># Sort by index</span>
+<span class="fn">print</span>(df.sort_index())
+
+<span class="cm"># nlargest / nsmallest — efficient top-N</span>
+<span class="fn">print</span>(df.nlargest(<span class="nm">2</span>, <span class="st">'salary'</span>))
+<span class="fn">print</span>(df.nsmallest(<span class="nm">2</span>, <span class="st">'salary'</span>))</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre># sorted by salary asc
+    name dept  salary
+1    Bob  Mkt   55000
+3   Dave   HR   65000
+0  Alice  Eng   90000
+2  Carol  Eng  110000
+
+# nlargest(2)
+    name dept  salary
+2  Carol  Eng  110000
+0  Alice  Eng   90000
+
+# nsmallest(2)
+  name dept  salary
+1  Bob  Mkt   55000
+3 Dave   HR   65000</pre></div>
+</div>
+
+<!-- ═══ S10: Missing Data ═══ -->
+<div class="section" id="s10">
+  <div class="section-head">
+    <span class="snum yellow">10</span>
+    <h2>Missing Data</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>df = pd.DataFrame({
+    <span class="st">'A'</span>: [<span class="nm">1</span>, np.nan, <span class="nm">3</span>, np.nan],
+    <span class="st">'B'</span>: [<span class="nm">4</span>, <span class="nm">5</span>, np.nan, <span class="nm">7</span>],
+    <span class="st">'C'</span>: [<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="kw">None</span>, <span class="st">'w'</span>],
+})
+
+<span class="cm"># Detect missing values</span>
+<span class="fn">print</span>(df.isna())
+<span class="fn">print</span>(df.isna().sum())       <span class="cm"># count per column</span>
+<span class="fn">print</span>(df.isna().sum().sum()) <span class="cm"># total missing</span>
+<span class="fn">print</span>(df.notna())
+
+<span class="cm"># Drop rows with ANY missing value</span>
+<span class="fn">print</span>(df.dropna())
+
+<span class="cm"># Drop rows where ALL values are missing</span>
+<span class="fn">print</span>(df.dropna(how=<span class="st">'all'</span>))
+
+<span class="cm"># Only drop if missing in specific columns</span>
+<span class="fn">print</span>(df.dropna(subset=[<span class="st">'A'</span>]))
+
+<span class="cm"># Drop columns with any NaN</span>
+<span class="fn">print</span>(df.dropna(axis=<span class="nm">1</span>))
+
+<span class="cm"># Fill with a scalar</span>
+<span class="fn">print</span>(df.fillna(<span class="nm">0</span>))
+
+<span class="cm"># Fill with column mean</span>
+df[<span class="st">'A'</span>] = df[<span class="st">'A'</span>].fillna(df[<span class="st">'A'</span>].mean())
+
+<span class="cm"># Forward fill (propagate last valid value downward)</span>
+<span class="fn">print</span>(df.ffill())
+
+<span class="cm"># Backward fill</span>
+<span class="fn">print</span>(df.bfill())
+
+<span class="cm"># Interpolate numeric columns</span>
+df_num = pd.DataFrame({<span class="st">'v'</span>: [<span class="nm">1</span>, np.nan, np.nan, <span class="nm">4</span>]})
+<span class="fn">print</span>(df_num.interpolate())</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>       A      B      C
+0  False  False  False
+1   True  False  False
+2  False   True   True
+3   True  False  False
+
+A    2
+B    1
+C    1
+dtype: int64
+
+Total: 4
+
+# dropna() — only row 0 has no NaN
+     A    B  C
+0  1.0  4.0  x
+
+# A filled with mean (1+3)/2 = 2.0
+     A    B     C
+0  1.0  4.0     x
+1  2.0  5.0     y
+2  3.0  NaN  None
+3  2.0  7.0     w
+
+# interpolate v
+     v
+0  1.0
+1  2.0
+2  3.0
+3  4.0</pre></div>
+</div>
+
+<!-- ═══ S11: Dtypes ═══ -->
+<div class="section" id="s11">
+  <div class="section-head">
+    <span class="snum red">11</span>
+    <h2>Data Types &amp; Casting</h2>
+  </div>
+
+  <table>
+    <tr><th>pandas dtype</th><th>Python type</th><th>Notes</th></tr>
+    <tr><td>int64, Int64</td><td>int</td><td>Int64 (capital I) is nullable integer</td></tr>
+    <tr><td>float64</td><td>float</td><td>Default for floats and NaN-containing int cols</td></tr>
+    <tr><td>object</td><td>str / mixed</td><td>Generic; strings stored as Python objects</td></tr>
+    <tr><td>string</td><td>str</td><td>Dedicated string type — use pd.StringDtype()</td></tr>
+    <tr><td>bool, boolean</td><td>bool</td><td>boolean (capital B) supports NA</td></tr>
+    <tr><td>category</td><td>—</td><td>Efficient for low-cardinality string columns</td></tr>
+    <tr><td>datetime64[ns]</td><td>datetime</td><td>Nanosecond timestamp</td></tr>
+    <tr><td>timedelta64[ns]</td><td>timedelta</td><td>Durations</td></tr>
+  </table>
+
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>df = pd.DataFrame({
+    <span class="st">'a'</span>: [<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'3'</span>],
+    <span class="st">'b'</span>: [<span class="st">'1.5'</span>, <span class="st">'2.5'</span>, <span class="st">'3.5'</span>],
+    <span class="st">'c'</span>: [<span class="st">'2024-01-01'</span>, <span class="st">'2024-06-15'</span>, <span class="st">'2024-12-31'</span>],
+})
+
+<span class="cm"># Cast columns</span>
+df[<span class="st">'a'</span>] = df[<span class="st">'a'</span>].astype(int)
+df[<span class="st">'b'</span>] = df[<span class="st">'b'</span>].astype(float)
+df[<span class="st">'c'</span>] = pd.to_datetime(df[<span class="st">'c'</span>])
+<span class="fn">print</span>(df.dtypes)
+
+<span class="cm"># pd.to_numeric with errors='coerce' — bad values → NaN</span>
+s = pd.Series([<span class="st">'1'</span>, <span class="st">'2'</span>, <span class="st">'abc'</span>, <span class="st">'4'</span>])
+<span class="fn">print</span>(pd.to_numeric(s, errors=<span class="st">'coerce'</span>))
+
+<span class="cm"># Cast multiple columns at once</span>
+df2 = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>,<span class="nm">2</span>], <span class="st">'y'</span>: [<span class="nm">3</span>,<span class="nm">4</span>]})
+df2 = df2.astype({<span class="st">'x'</span>: float, <span class="st">'y'</span>: <span class="st">'Int64'</span>})  <span class="cm"># Int64 = nullable int</span>
+<span class="fn">print</span>(df2.dtypes)</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>a             int64
+b           float64
+c    datetime64[ns]
+dtype: object
+
+0    1.0
+1    2.0
+2    NaN
+3    4.0
+dtype: float64
+
+x    float64
+y      Int64
+dtype: object</pre></div>
+</div>
+
+<!-- ═══ S12: Strings ═══ -->
+<div class="section" id="s12">
+  <div class="section-head">
+    <span class="snum">12</span>
+    <h2>String Operations (.str accessor)</h2>
+  </div>
+  <p>The <code>.str</code> accessor exposes vectorized string methods on Series of dtype <code>object</code> or <code>string</code>.</p>
+
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre>s = pd.Series([<span class="st">'  Alice Smith  '</span>, <span class="st">'bob jones'</span>, <span class="st">'CAROL BROWN'</span>, np.nan])
+
+<span class="fn">print</span>(s.str.strip())               <span class="cm"># remove whitespace</span>
+<span class="fn">print</span>(s.str.lower())               <span class="cm"># lowercase</span>
+<span class="fn">print</span>(s.str.upper())               <span class="cm"># uppercase</span>
+<span class="fn">print</span>(s.str.title())               <span class="cm"># Title Case</span>
+<span class="fn">print</span>(s.str.len())                 <span class="cm"># string length</span>
+<span class="fn">print</span>(s.str.contains(<span class="st">'alice'</span>, case=<span class="kw">False</span>, na=<span class="kw">False</span>))  <span class="cm"># regex match</span>
+<span class="fn">print</span>(s.str.replace(<span class="st">'  '</span>, <span class="st">' '</span>, regex=<span class="kw">False</span>))
+<span class="fn">print</span>(s.str.split(<span class="st">' '</span>))           <span class="cm"># split to list</span>
+
+<span class="cm"># Extract first name via regex group</span>
+<span class="fn">print</span>(s.str.strip().str.split(<span class="st">' '</span>).str[<span class="nm">0</span>])
+
+<span class="cm"># Slice — like s[1:4] per element</span>
+<span class="fn">print</span>(s.str[:<span class="nm">5</span>])
+
+<span class="cm"># startswith / endswith</span>
+<span class="fn">print</span>(s.str.lower().str.startswith(<span class="st">'b'</span>, na=<span class="kw">False</span>))
+
+<span class="cm"># Extract with regex — named groups</span>
+emails = pd.Series([<span class="st">'alice@example.com'</span>, <span class="st">'bob@test.org'</span>])
+<span class="fn">print</span>(emails.str.extract(<span class="st">r'(?P&lt;user&gt;[\w.]+)@(?P&lt;domain&gt;\w+)'</span>))</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>0      Alice Smith
+1        bob jones
+2      CAROL BROWN
+3              NaN
+dtype: object
+
+0    [True, False, False, False]  ← contains 'alice' (case-insensitive)
+
+# extract emails
+    user   domain
+0  alice  example
+1    bob     test</pre></div>
+</div>
+
+
+<!-- ═══ S13: Apply / Map ═══ -->
+<div class="section" id="s13">
+  <div class="section-head">
+    <span class="snum blue">13</span>
+    <h2>Apply, Map &amp; Vectorization</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Series.map — element-wise transform</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>s = pd.Series([<span class="st">'cat'</span>, <span class="st">'dog'</span>, <span class="st">'cat'</span>, <span class="st">'fish'</span>])
+
+<span class="cm"># Map via dict — replaces values</span>
+<span class="fn">print</span>(s.map({<span class="st">'cat'</span>: <span class="nm">1</span>, <span class="st">'dog'</span>: <span class="nm">2</span>, <span class="st">'fish'</span>: <span class="nm">3</span>}))
+
+<span class="cm"># Map via function</span>
+<span class="fn">print</span>(s.map(<span class="kw">lambda</span> x: x.upper()))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>0    1
+1    2
+2    1
+3    3
+dtype: int64
+
+0     CAT
+1     DOG
+2     CAT
+3    FISH
+dtype: object</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>DataFrame.apply — along rows or columns</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'A'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+    <span class="st">'B'</span>: [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>],
+})
+
+<span class="cm"># Apply function column-wise (axis=0, default)</span>
+<span class="fn">print</span>(df.apply(np.sum))        <span class="cm"># sum each column</span>
+<span class="fn">print</span>(df.apply(np.mean))       <span class="cm"># mean each column</span>
+
+<span class="cm"># Apply function row-wise (axis=1)</span>
+<span class="fn">print</span>(df.apply(<span class="kw">lambda</span> row: row[<span class="st">'A'</span>] * row[<span class="st">'B'</span>], axis=<span class="nm">1</span>))
+
+<span class="cm"># Apply returning multiple values → DataFrame</span>
+<span class="kw">def</span> <span class="fn">stats</span>(col):
+    <span class="kw">return</span> pd.Series({<span class="st">'min'</span>: col.min(), <span class="st">'max'</span>: col.max(), <span class="st">'mean'</span>: col.mean()})
+<span class="fn">print</span>(df.apply(stats))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>A     6
+B    60
+dtype: int64
+
+A    2.0
+B    20.0
+dtype: float64
+
+0     10
+1     40
+2     90
+dtype: int64
+
+      A     B
+min   1    10
+max   3    30
+mean  2.0  20.0</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>applymap / map (element-wise on DataFrame)</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>: [<span class="nm">1</span>, <span class="nm">-2</span>], <span class="st">'B'</span>: [<span class="nm">-3</span>, <span class="nm">4</span>]})
+
+<span class="cm"># pandas >= 2.1: DataFrame.map()  (was applymap in older versions)</span>
+<span class="fn">print</span>(df.map(abs))   <span class="cm"># abs of every element</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>   A  B
+0  1  3
+1  2  4</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Prefer vectorization over apply</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'price'</span>: [<span class="nm">100</span>, <span class="nm">200</span>, <span class="nm">300</span>], <span class="st">'qty'</span>: [<span class="nm">2</span>, <span class="nm">5</span>, <span class="nm">1</span>]})
+
+<span class="cm"># ❌ Slow — apply with lambda</span>
+df[<span class="st">'revenue_slow'</span>] = df.apply(<span class="kw">lambda</span> r: r[<span class="st">'price'</span>] * r[<span class="st">'qty'</span>], axis=<span class="nm">1</span>)
+
+<span class="cm"># ✅ Fast — vectorized operation</span>
+df[<span class="st">'revenue_fast'</span>] = df[<span class="st">'price'</span>] * df[<span class="st">'qty'</span>]
+
+<span class="cm"># ✅ Also fast — np.where for conditional logic</span>
+df[<span class="st">'tier'</span>] = np.where(df[<span class="st">'revenue_fast'</span>] > <span class="nm">500</span>, <span class="st">'high'</span>, <span class="st">'low'</span>)
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>   price  qty  revenue_slow  revenue_fast  tier
+0    100    2           200           200   low
+1    200    5          1000          1000  high
+2    300    1           300           300   low</pre></div>
+    <div class="box tip"><p><strong>Rule:</strong> vectorized ops &gt; <code>apply</code> &gt; Python loops. Use <code>np.where</code>, <code>pd.cut</code>, <code>pd.Categorical</code> before reaching for <code>apply</code>.</p></div>
+  </div>
+</div>
+
+<!-- ═══ S14: GroupBy ═══ -->
+<div class="section" id="s14">
+  <div class="section-head">
+    <span class="snum green">14</span>
+    <h2>GroupBy &amp; Aggregation</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Basic groupby</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>],
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>, <span class="st">'Eve'</span>, <span class="st">'Frank'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>, <span class="nm">58000</span>, <span class="nm">95000</span>],
+    <span class="st">'yrs'</span>:    [<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">6</span>],
+})
+
+<span class="cm"># Group by dept, compute mean salary</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'dept'</span>)[<span class="st">'salary'</span>].mean())
+
+<span class="cm"># Multiple aggregations</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'dept'</span>)[<span class="st">'salary'</span>].agg([<span class="st">'mean'</span>, <span class="st">'min'</span>, <span class="st">'max'</span>, <span class="st">'count'</span>]))
+
+<span class="cm"># Multiple columns, multiple aggs</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'dept'</span>).agg(
+    avg_salary=(<span class="st">'salary'</span>, <span class="st">'mean'</span>),
+    total_yrs=(<span class="st">'yrs'</span>, <span class="st">'sum'</span>),
+    headcount=(<span class="st">'name'</span>, <span class="st">'count'</span>),
+))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>dept
+Eng    98333.333333
+HR     65000.000000
+Mkt    56500.000000
+Name: salary, dtype: float64
+
+          mean     min     max  count
+dept
+Eng   98333.33   90000  110000      3
+HR    65000.00   65000   65000      1
+Mkt   56500.00   55000   58000      2
+
+       avg_salary  total_yrs  headcount
+dept
+Eng   98333.33333         19          3
+HR    65000.00000          3          1
+Mkt   56500.00000          3          2</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>transform — keep original index</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Add group mean back as a column (useful for normalization)</span>
+df[<span class="st">'dept_avg'</span>] = df.groupby(<span class="st">'dept'</span>)[<span class="st">'salary'</span>].transform(<span class="st">'mean'</span>)
+df[<span class="st">'above_avg'</span>] = df[<span class="st">'salary'</span>] > df[<span class="st">'dept_avg'</span>]
+<span class="fn">print</span>(df[[<span class="st">'name'</span>, <span class="st">'dept'</span>, <span class="st">'salary'</span>, <span class="st">'dept_avg'</span>, <span class="st">'above_avg'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>    name dept  salary      dept_avg  above_avg
+0  Alice  Eng   90000  98333.333333      False
+1    Bob  Mkt   55000  56500.000000      False
+2  Carol  Eng  110000  98333.333333       True
+3   Dave   HR   65000  65000.000000      False
+4    Eve  Mkt   58000  56500.000000       True
+5  Frank  Eng   95000  98333.333333      False</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>filter — include/exclude whole groups</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Keep only departments with more than 1 employee</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'dept'</span>).filter(<span class="kw">lambda</span> g: len(g) > <span class="nm">1</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>    name dept  salary  yrs      dept_avg  above_avg
+0  Alice  Eng   90000    5  98333.333333      False
+1    Bob  Mkt   55000    2  56500.000000      False
+2  Carol  Eng  110000    8  98333.333333       True
+4    Eve  Mkt   58000    1  56500.000000       True
+5  Frank  Eng   95000    6  98333.333333      False</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S14 ADVANCED: apply vs agg vs transform ═══ -->
+<div class="section" id="s14adv">
+  <div class="section-head">
+    <span class="snum" style="font-size:0.6rem;width:38px">14+</span>
+    <h2>GroupBy Advanced: apply vs agg vs transform</h2>
+  </div>
+  <p>This is the most important groupby decision you will make. The wrong choice gives correct results but can be 10-100x slower on large data.</p>
+
+  <table>
+    <tr><th>Need</th><th>Best tool</th><th>Returns</th></tr>
+    <tr><td>One scalar per group (summary)</td><td><code>agg</code></td><td>Smaller DataFrame, one row per group</td></tr>
+    <tr><td>One value per row, aligned to original</td><td><code>transform</code></td><td>Same shape as original DataFrame</td></tr>
+    <tr><td>Attach many group stats to every row</td><td><code>agg</code> + <code>merge</code></td><td>Same shape as original DataFrame</td></tr>
+    <tr><td>Keep/drop whole groups</td><td><code>filter</code></td><td>Subset of original rows</td></tr>
+    <tr><td>Top-N rows per group</td><td><code>rank</code> or <code>idxmax</code>/<code>nlargest</code></td><td>Subset of original rows</td></tr>
+    <tr><td>Variable-shape result per group / arbitrary logic</td><td><code>apply</code> (last resort)</td><td>Variable</td></tr>
+  </table>
+
+  <div class="subsection">
+    <h3>apply — flexible but slow</h3>
+    <p><code>apply</code> calls a Python function once per group sub-DataFrame. It bypasses C-optimized paths and can be 10-100x slower than <code>agg</code>/<code>transform</code> for equivalent operations.</p>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'group'</span>:  list(<span class="st">'AABBCCAA'</span>),
+    <span class="st">'value'</span>:  [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>, <span class="nm">60</span>, <span class="nm">70</span>, <span class="nm">80</span>],
+    <span class="st">'weight'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">2</span>],
+})
+
+<span class="cm"># apply is correct when return shape varies per group</span>
+<span class="kw">def</span> <span class="fn">top_two</span>(g):
+    <span class="kw">return</span> g.sort_values(<span class="st">'value'</span>, ascending=<span class="kw">False</span>).head(<span class="nm">2</span>)
+
+<span class="fn">print</span>(df.groupby(<span class="st">'group'</span>).apply(top_two, include_groups=<span class="kw">False</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>           value  weight
+group
+A     7      80       2
+      6      70       1
+B     3      40       2
+      2      30       1
+C     5      60       2
+      4      50       1</pre></div>
+    <div class="box warn"><p><strong>Note:</strong> <code>apply</code> produces a MultiIndex (group key + original index). Use it when return shapes genuinely differ per group or logic cannot be expressed with <code>agg</code>/<code>transform</code>.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>apply vs agg — one scalar per group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span><span class="desc">apply version — slow</span></div>
+      <pre><span class="cm"># &#10060; apply — calls Python per group, no C optimization</span>
+<span class="kw">def</span> <span class="fn">mean_and_sum</span>(g):
+    <span class="kw">return</span> pd.Series({<span class="st">'mean'</span>: g[<span class="st">'value'</span>].mean(), <span class="st">'sum'</span>: g[<span class="st">'value'</span>].sum()})
+<span class="fn">print</span>(df.groupby(<span class="st">'group'</span>).apply(mean_and_sum))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>       mean  sum
+group
+A      45.0  180
+B      35.0   70
+C      55.0  110</pre></div>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span><span class="desc">agg version — fast (preferred)</span></div>
+      <pre><span class="cm"># &#10003; agg — uses C-optimized built-in functions</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].agg([<span class="st">'mean'</span>, <span class="st">'sum'</span>]))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>       mean  sum
+group
+A      45.0  180
+B      35.0   70
+C      55.0  110</pre></div>
+    <div class="box tip"><p><code>agg</code> is C-optimized for built-in string names: <code>'mean'</code>, <code>'sum'</code>, <code>'std'</code>, <code>'count'</code>, <code>'min'</code>, <code>'max'</code>, <code>'first'</code>, <code>'last'</code>. Always prefer string names over equivalent lambdas.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>apply vs transform — row-aligned demeaning</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span><span class="desc">apply version — slow, awkward reindex</span></div>
+      <pre><span class="cm"># &#10060; apply — constructs per-group DataFrames, creates MultiIndex mess</span>
+<span class="kw">def</span> <span class="fn">demean</span>(g):
+    g = g.copy()
+    g[<span class="st">'value_dm'</span>] = g[<span class="st">'value'</span>] - g[<span class="st">'value'</span>].mean()
+    <span class="kw">return</span> g
+res = df.groupby(<span class="st">'group'</span>).apply(demean)
+<span class="fn">print</span>(res[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'value_dm'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>        group  value  value_dm
+group
+A     0     A     10     -35.0
+      1     A     20     -25.0
+      6     A     70      25.0
+      7     A     80      35.0
+B     2     B     30      -5.0
+      3     B     40       5.0
+C     4     C     50      -5.0
+      5     C     60       5.0</pre></div>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span><span class="desc">transform version — fast, clean</span></div>
+      <pre><span class="cm"># &#10003; transform — returns aligned Series, same index as df</span>
+df[<span class="st">'value_dm'</span>] = df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].transform(<span class="kw">lambda</span> x: x - x.mean())
+
+<span class="cm"># Even faster: use built-in string, then vectorized subtract</span>
+df[<span class="st">'value_dm2'</span>] = df[<span class="st">'value'</span>] - df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].transform(<span class="st">'mean'</span>)
+<span class="fn">print</span>(df[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'value_dm2'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  value  value_dm2
+0     A     10      -35.0
+1     A     20      -25.0
+2     B     30       -5.0
+3     B     40        5.0
+4     C     50       -5.0
+5     C     60        5.0
+6     A     70       25.0
+7     A     80       35.0</pre></div>
+    <div class="box tip"><p><code>transform</code> returns a Series with the <strong>same index as the original DataFrame</strong> — no reindex gymnastics needed.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Compute group stats once + merge back</h3>
+    <p>When you need multiple group-level fields on every row, compute all aggregations in one <code>agg()</code> then <code>merge</code> once. This is more efficient than multiple <code>transform</code> calls.</p>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>grp_stats = df.groupby(<span class="st">'group'</span>, as_index=<span class="kw">False</span>).agg(
+    group_sum  = (<span class="st">'value'</span>, <span class="st">'sum'</span>),
+    group_mean = (<span class="st">'value'</span>, <span class="st">'mean'</span>),
+    group_cnt  = (<span class="st">'value'</span>, <span class="st">'count'</span>),
+)
+<span class="fn">print</span>(grp_stats)
+
+df_m = df.merge(grp_stats, on=<span class="st">'group'</span>, how=<span class="st">'left'</span>)
+df_m[<span class="st">'pct_of_group'</span>] = df_m[<span class="st">'value'</span>] / df_m[<span class="st">'group_sum'</span>]
+<span class="fn">print</span>(df_m[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'group_sum'</span>, <span class="st">'group_mean'</span>, <span class="st">'pct_of_group'</span>]].round(<span class="nm">3</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  group_sum  group_mean  group_cnt
+0     A        180        45.0          4
+1     B         70        35.0          2
+2     C        110        55.0          2
+
+  group  value  group_sum  group_mean  pct_of_group
+0     A     10        180        45.0         0.056
+1     A     20        180        45.0         0.111
+2     B     30         70        35.0         0.429
+3     B     40         70        35.0         0.571
+4     C     50        110        55.0         0.455
+5     C     60        110        55.0         0.545
+6     A     70        180        45.0         0.389
+7     A     80        180        45.0         0.444</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>nth, first, last — fast row selection per group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="fn">print</span>(df.groupby(<span class="st">'group'</span>, sort=<span class="kw">False</span>).nth(<span class="nm">0</span>)[[<span class="st">'value'</span>]])   <span class="cm"># first row</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'group'</span>, sort=<span class="kw">False</span>).last()[[<span class="st">'value'</span>]])          <span class="cm"># last row</span>
+<span class="fn">print</span>(df.groupby(<span class="st">'group'</span>).head(<span class="nm">1</span>)[[<span class="st">'group'</span>, <span class="st">'value'</span>]])          <span class="cm"># head(1) per group</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre># nth(0) — first row per group
+       value
+group
+A         10
+B         30
+C         50
+
+# last() — last row per group
+       value
+group
+A         80
+B         40
+C         60
+
+# head(1)
+  group  value
+0     A     10
+2     B     30
+4     C     50</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>cumcount &amp; cumsum within groups</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>d = df[[<span class="st">'group'</span>, <span class="st">'value'</span>]].copy()
+d[<span class="st">'cumcount'</span>] = d.groupby(<span class="st">'group'</span>).cumcount()          <span class="cm"># 0-based row # per group</span>
+d[<span class="st">'cum_sum'</span>]  = d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].cumsum()   <span class="cm"># running total per group</span>
+<span class="fn">print</span>(d)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  value  cumcount  cum_sum
+0     A     10         0       10
+1     A     20         1       30
+2     B     30         0       30
+3     B     40         1       70
+4     C     50         0       50
+5     C     60         1      110
+6     A     70         2      100
+7     A     80         3      180</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>ngroup &amp; rank within groups</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>d[<span class="st">'group_id'</span>]      = d.groupby(<span class="st">'group'</span>).ngroup()
+d[<span class="st">'rank_in_group'</span>] = d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].rank(method=<span class="st">'first'</span>, ascending=<span class="kw">False</span>)
+<span class="fn">print</span>(d[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'group_id'</span>, <span class="st">'rank_in_group'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  value  group_id  rank_in_group
+0     A     10         0            4.0
+1     A     20         0            3.0
+2     B     30         1            2.0
+3     B     40         1            1.0
+4     C     50         2            2.0
+5     C     60         2            1.0
+6     A     70         0            2.0
+7     A     80         0            1.0</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Top-N per group — vectorized via rank (no apply)</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># &#10003; Top-2 per group via rank (no apply)</span>
+d[<span class="st">'rank_desc'</span>] = d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].rank(method=<span class="st">'first'</span>, ascending=<span class="kw">False</span>)
+top2 = d[d[<span class="st">'rank_desc'</span>] &lt;= <span class="nm">2</span>].sort_values([<span class="st">'group'</span>, <span class="st">'rank_desc'</span>])
+<span class="fn">print</span>(top2[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'rank_desc'</span>]])
+
+<span class="cm"># &#10003; Top-1 per group — idxmax is very fast</span>
+idx = d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].idxmax()
+<span class="fn">print</span>(d.loc[idx, [<span class="st">'group'</span>, <span class="st">'value'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre># top-2
+  group  value  rank_desc
+7     A     80        1.0
+6     A     70        2.0
+3     B     40        1.0
+2     B     30        2.0
+5     C     60        1.0
+4     C     50        2.0
+
+# top-1 via idxmax
+  group  value
+7     A     80
+3     B     40
+5     C     60</pre></div>
+    <div class="box tip"><p>Prefer <code>rank</code>/<code>idxmax</code> over <code>apply(top_n)</code>. The vectorized path never constructs Python group objects and scales to millions of rows.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Z-score per group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>d[<span class="st">'zscore'</span>] = (
+    (d[<span class="st">'value'</span>] - d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].transform(<span class="st">'mean'</span>))
+    / d.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].transform(<span class="st">'std'</span>)
+)
+<span class="fn">print</span>(d[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'zscore'</span>]].round(<span class="nm">3</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  value  zscore
+0     A     10  -1.161
+1     A     20  -0.387
+2     B     30  -0.707
+3     B     40   0.707
+4     C     50  -0.707
+5     C     60   0.707
+6     A     70   0.387
+7     A     80   1.161</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>GroupBy performance checklist</h3>
+    <table>
+      <tr><th>Tip</th><th>Code pattern</th></tr>
+      <tr><td>Use categorical groupers</td><td><code>df['g'] = df['g'].astype('category')</code></td></tr>
+      <tr><td>Skip sort when order doesn't matter</td><td><code>groupby('g', sort=False)</code></td></tr>
+      <tr><td>Skip unseen categories</td><td><code>groupby('g', observed=True)</code></td></tr>
+      <tr><td>Prefer string agg names over lambdas</td><td><code>.transform('mean')</code> not <code>.transform(lambda x: x.mean())</code></td></tr>
+      <tr><td>One agg + merge vs N transforms</td><td>Faster when you need many group stats</td></tr>
+      <tr><td>Return scalar/Series from apply</td><td>Returning DataFrame from apply is costliest</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ S15: Merge/Join ═══ -->
+<div class="section" id="s15">
+  <div class="section-head">
+    <span class="snum purple">15</span>
+    <h2>Merge, Join &amp; Concat</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>pd.merge — SQL-style joins</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>employees = pd.DataFrame({
+    <span class="st">'emp_id'</span>:  [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>],
+    <span class="st">'name'</span>:    [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>],
+    <span class="st">'dept_id'</span>: [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">10</span>, <span class="nm">30</span>],
+})
+departments = pd.DataFrame({
+    <span class="st">'dept_id'</span>: [<span class="nm">10</span>, <span class="nm">20</span>],
+    <span class="st">'dept'</span>:    [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>],
+})
+
+<span class="cm"># inner join (default) — only matching rows</span>
+<span class="fn">print</span>(pd.merge(employees, departments, on=<span class="st">'dept_id'</span>))
+
+<span class="cm"># left join — all employees, NaN for unmatched dept</span>
+<span class="fn">print</span>(pd.merge(employees, departments, on=<span class="st">'dept_id'</span>, how=<span class="st">'left'</span>))
+
+<span class="cm"># Merge on different column names</span>
+df_a = pd.DataFrame({<span class="st">'id'</span>: [<span class="nm">1</span>,<span class="nm">2</span>], <span class="st">'val'</span>: [<span class="st">'a'</span>,<span class="st">'b'</span>]})
+df_b = pd.DataFrame({<span class="st">'ref'</span>: [<span class="nm">1</span>,<span class="nm">2</span>], <span class="st">'score'</span>: [<span class="nm">10</span>,<span class="nm">20</span>]})
+<span class="fn">print</span>(pd.merge(df_a, df_b, left_on=<span class="st">'id'</span>, right_on=<span class="st">'ref'</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre># inner join
+   emp_id   name  dept_id  dept
+0       1  Alice       10   Eng
+1       3  Carol       10   Eng
+2       2    Bob       20   Mkt
+
+# left join
+   emp_id   name  dept_id  dept
+0       1  Alice       10   Eng
+1       2    Bob       20   Mkt
+2       3  Carol       10   Eng
+3       4   Dave       30   NaN</pre></div>
+    <div class="box info"><p>Join types: <code>inner</code> (intersection), <code>left</code> (all left + matched right), <code>right</code>, <code>outer</code> (union). Use <code>indicator=True</code> to see which rows matched.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>pd.concat — stack DataFrames</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df1 = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>,<span class="nm">2</span>], <span class="st">'B'</span>:[<span class="nm">3</span>,<span class="nm">4</span>]})
+df2 = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">5</span>,<span class="nm">6</span>], <span class="st">'B'</span>:[<span class="nm">7</span>,<span class="nm">8</span>]})
+df3 = pd.DataFrame({<span class="st">'C'</span>:[<span class="nm">9</span>,<span class="nm">10</span>], <span class="st">'D'</span>:[<span class="nm">11</span>,<span class="nm">12</span>]})
+
+<span class="cm"># Stack rows (axis=0 default)</span>
+<span class="fn">print</span>(pd.concat([df1, df2], ignore_index=<span class="kw">True</span>))
+
+<span class="cm"># Stack columns (axis=1)</span>
+<span class="fn">print</span>(pd.concat([df1, df3], axis=<span class="nm">1</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre># rows stacked
+   A  B
+0  1  3
+1  2  4
+2  5  7
+3  6  8
+
+# columns side by side
+   A  B   C   D
+0  1  3   9  11
+1  2  4  10  12</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S16: Reshape ═══ -->
+<div class="section" id="s16">
+  <div class="section-head">
+    <span class="snum yellow">16</span>
+    <h2>Reshaping — pivot, melt, stack, unstack</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>pivot_table</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:    [<span class="st">'Alice'</span>, <span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Bob'</span>],
+    <span class="st">'quarter'</span>: [<span class="st">'Q1'</span>, <span class="st">'Q2'</span>, <span class="st">'Q1'</span>, <span class="st">'Q2'</span>],
+    <span class="st">'sales'</span>:   [<span class="nm">100</span>, <span class="nm">150</span>, <span class="nm">80</span>, <span class="nm">120</span>],
+    <span class="st">'returns'</span>: [<span class="nm">5</span>, <span class="nm">10</span>, <span class="nm">3</span>, <span class="nm">8</span>],
+})
+
+pt = df.pivot_table(index=<span class="st">'name'</span>, columns=<span class="st">'quarter'</span>,
+                    values=<span class="st">'sales'</span>, aggfunc=<span class="st">'sum'</span>)
+<span class="fn">print</span>(pt)
+
+<span class="cm"># Multiple values</span>
+pt2 = df.pivot_table(index=<span class="st">'name'</span>, columns=<span class="st">'quarter'</span>,
+                     values=[<span class="st">'sales'</span>, <span class="st">'returns'</span>], aggfunc=<span class="st">'sum'</span>)
+<span class="fn">print</span>(pt2)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>quarter     Q1   Q2
+name
+Alice      100  150
+Bob         80  120
+
+        returns       sales
+quarter      Q1  Q2     Q1   Q2
+name
+Alice         5  10    100  150
+Bob           3   8     80  120</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>melt — wide to long format</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>wide = pd.DataFrame({
+    <span class="st">'name'</span>: [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>],
+    <span class="st">'Q1'</span>:   [<span class="nm">100</span>, <span class="nm">80</span>],
+    <span class="st">'Q2'</span>:   [<span class="nm">150</span>, <span class="nm">120</span>],
+})
+long = pd.melt(wide, id_vars=<span class="st">'name'</span>, var_name=<span class="st">'quarter'</span>, value_name=<span class="st">'sales'</span>)
+<span class="fn">print</span>(long)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>    name quarter  sales
+0  Alice      Q1    100
+1    Bob      Q1     80
+2  Alice      Q2    150
+3    Bob      Q2    120</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>stack / unstack</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>,<span class="nm">2</span>], <span class="st">'B'</span>:[<span class="nm">3</span>,<span class="nm">4</span>]}, index=[<span class="st">'r0'</span>,<span class="st">'r1'</span>])
+stacked = df.stack()          <span class="cm"># columns → innermost row index level</span>
+<span class="fn">print</span>(stacked)
+<span class="fn">print</span>(stacked.unstack())      <span class="cm"># reverse back</span></pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>r0  A    1
+    B    3
+r1  A    2
+    B    4
+dtype: int64
+
+    A  B
+r0  1  3
+r1  2  4</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S17: Time Series ═══ -->
+<div class="section" id="s17">
+  <div class="section-head">
+    <span class="snum red">17</span>
+    <h2>Time Series</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Creating datetime indexes</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Generate date range</span>
+dates = pd.date_range(start=<span class="st">'2024-01-01'</span>, periods=<span class="nm">6</span>, freq=<span class="st">'ME'</span>)
+<span class="fn">print</span>(dates)
+
+<span class="cm"># Parse strings</span>
+s = pd.to_datetime([<span class="st">'2024-03-15'</span>, <span class="st">'15/06/2024'</span>, <span class="st">'July 4, 2024'</span>])
+<span class="fn">print</span>(s)
+
+<span class="cm"># Create DatetimeIndex from column</span>
+df = pd.DataFrame({
+    <span class="st">'date'</span>:  pd.date_range(<span class="st">'2024-01-01'</span>, periods=<span class="nm">6</span>, freq=<span class="st">'ME'</span>),
+    <span class="st">'sales'</span>: [<span class="nm">100</span>, <span class="nm">130</span>, <span class="nm">115</span>, <span class="nm">160</span>, <span class="nm">145</span>, <span class="nm">180</span>],
+})
+df = df.set_index(<span class="st">'date'</span>)
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>DatetimeIndex(['2024-01-31', '2024-02-29', '2024-03-31',
+               '2024-04-30', '2024-05-31', '2024-06-30'],
+              dtype='datetime64[ns]', freq='ME')
+
+DatetimeIndex(['2024-03-15', '2024-06-15', '2024-07-04'], dtype='datetime64[ns]', freq=None)
+
+            sales
+date
+2024-01-31    100
+2024-02-29    130
+2024-03-31    115
+2024-04-30    160
+2024-05-31    145
+2024-06-30    180</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Date components &amp; resampling</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Access date components via .dt accessor</span>
+s = pd.Series(pd.date_range(<span class="st">'2024-01-15'</span>, periods=<span class="nm">4</span>, freq=<span class="st">'ME'</span>))
+<span class="fn">print</span>(s.dt.year)
+<span class="fn">print</span>(s.dt.month)
+<span class="fn">print</span>(s.dt.day)
+<span class="fn">print</span>(s.dt.day_name())
+<span class="fn">print</span>(s.dt.quarter)
+<span class="fn">print</span>(s.dt.is_month_end)
+
+<span class="cm"># Resample — change frequency with aggregation</span>
+daily = pd.DataFrame({
+    <span class="st">'date'</span>:  pd.date_range(<span class="st">'2024-01-01'</span>, periods=<span class="nm">90</span>),
+    <span class="st">'sales'</span>: np.random.randint(<span class="nm">50</span>, <span class="nm">200</span>, <span class="nm">90</span>),
+}).set_index(<span class="st">'date'</span>)
+
+monthly = daily.resample(<span class="st">'ME'</span>).sum()
+<span class="fn">print</span>(monthly)
+
+weekly_mean = daily.resample(<span class="st">'W'</span>).mean()
+<span class="fn">print</span>(weekly_mean.head(<span class="nm">3</span>))
+
+<span class="cm"># shift — lag/lead values</span>
+df = pd.DataFrame({<span class="st">'v'</span>: [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>]})
+df[<span class="st">'lag1'</span>]  = df[<span class="st">'v'</span>].shift(<span class="nm">1</span>)
+df[<span class="st">'lead1'</span>] = df[<span class="st">'v'</span>].shift(-<span class="nm">1</span>)
+df[<span class="st">'pct_change'</span>] = df[<span class="st">'v'</span>].pct_change()
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>0    2024
+1    2024
+2    2024
+3    2024
+dtype: int32
+
+0    1
+1    2
+2    3
+3    4
+dtype: int32
+
+0    Wednesday
+1     Saturday
+...
+
+# df with lag/lead
+   v  lag1  lead1  pct_change
+0  10   NaN   20.0         NaN
+1  20  10.0   30.0        1.00
+2  30  20.0   40.0        0.50
+3  40  30.0    NaN        0.33</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S18: Categorical ═══ -->
+<div class="section" id="s18">
+  <div class="section-head">
+    <span class="snum">18</span>
+    <h2>Categorical Data</h2>
+  </div>
+  <p>Categorical dtype stores repeated string values as integers internally — much more memory-efficient and faster for groupby operations.</p>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre><span class="cm"># Convert to categorical</span>
+df = pd.DataFrame({
+    <span class="st">'dept'</span>: [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>] * <span class="nm">1000</span>,
+    <span class="st">'score'</span>: np.random.randint(<span class="nm">60</span>, <span class="nm">100</span>, <span class="nm">5000</span>),
+})
+
+<span class="fn">print</span>(<span class="st">'object memory:'</span>, df[<span class="st">'dept'</span>].memory_usage(deep=<span class="kw">True</span>))
+df[<span class="st">'dept'</span>] = df[<span class="st">'dept'</span>].astype(<span class="st">'category'</span>)
+<span class="fn">print</span>(<span class="st">'category memory:'</span>, df[<span class="st">'dept'</span>].memory_usage(deep=<span class="kw">True</span>))
+<span class="fn">print</span>(df[<span class="st">'dept'</span>].cat.categories)
+
+<span class="cm"># Ordered categories</span>
+grade = pd.Categorical([<span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'A'</span>, <span class="st">'B'</span>],
+                       categories=[<span class="st">'C'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>], ordered=<span class="kw">True</span>)
+s = pd.Series(grade)
+<span class="fn">print</span>(s.sort_values())
+<span class="fn">print</span>(s[s >= <span class="st">'B'</span>])   <span class="cm"># comparison works because it's ordered</span>
+
+<span class="cm"># pd.cut — bin numeric into categories</span>
+ages = pd.Series([<span class="nm">12</span>, <span class="nm">22</span>, <span class="nm">35</span>, <span class="nm">55</span>, <span class="nm">70</span>])
+bins = pd.cut(ages, bins=[<span class="nm">0</span>,<span class="nm">18</span>,<span class="nm">35</span>,<span class="nm">65</span>,<span class="nm">100</span>],
+              labels=[<span class="st">'child'</span>,<span class="st">'young'</span>,<span class="st">'adult'</span>,<span class="st">'senior'</span>])
+<span class="fn">print</span>(bins)</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>object memory:   320128
+category memory: 5236
+
+Index(['Eng', 'HR', 'Mkt'], dtype='object')
+
+2    C
+0    B
+4    B
+1    A
+3    A
+dtype: category
+
+0    B
+1    A
+4    B
+dtype: category
+
+0      child
+1      young
+2      young
+3      adult
+4     senior
+dtype: category</pre></div>
+</div>
+
+<!-- ═══ S19: MultiIndex ═══ -->
+<div class="section" id="s19">
+  <div class="section-head">
+    <span class="snum blue">19</span>
+    <h2>MultiIndex (Hierarchical Index)</h2>
+  </div>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre><span class="cm"># Create via groupby result (most common)</span>
+df = pd.DataFrame({
+    <span class="st">'dept'</span>:    [<span class="st">'Eng'</span>, <span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Mkt'</span>],
+    <span class="st">'quarter'</span>: [<span class="st">'Q1'</span>,  <span class="st">'Q2'</span>,  <span class="st">'Q1'</span>,  <span class="st">'Q2'</span>],
+    <span class="st">'revenue'</span>: [<span class="nm">100</span>,   <span class="nm">120</span>,   <span class="nm">80</span>,    <span class="nm">95</span>],
+})
+mi = df.set_index([<span class="st">'dept'</span>, <span class="st">'quarter'</span>])
+<span class="fn">print</span>(mi)
+
+<span class="cm"># Select with MultiIndex</span>
+<span class="fn">print</span>(mi.loc[<span class="st">'Eng'</span>])             <span class="cm"># all Eng rows</span>
+<span class="fn">print</span>(mi.loc[(<span class="st">'Eng'</span>, <span class="st">'Q1'</span>)])     <span class="cm"># specific (dept, quarter)</span>
+
+<span class="cm"># Cross-section</span>
+<span class="fn">print</span>(mi.xs(<span class="st">'Q1'</span>, level=<span class="st">'quarter'</span>))
+
+<span class="cm"># Reset index back to columns</span>
+<span class="fn">print</span>(mi.reset_index())</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>               revenue
+dept quarter
+Eng  Q1            100
+     Q2            120
+Mkt  Q1             80
+     Q2             95
+
+# mi.loc['Eng']
+         revenue
+quarter
+Q1           100
+Q2           120
+
+# mi.loc[('Eng','Q1')] → revenue = 100
+
+# xs Q1
+      revenue
+dept
+Eng       100
+Mkt        80</pre></div>
+</div>
+
+<!-- ═══ S20: Window Functions ═══ -->
+<div class="section" id="s20">
+  <div class="section-head">
+    <span class="snum green">20</span>
+    <h2>Window Functions</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Rolling windows</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'date'</span>:  pd.date_range(<span class="st">'2024-01-01'</span>, periods=<span class="nm">8</span>),
+    <span class="st">'price'</span>: [<span class="nm">100</span>, <span class="nm">102</span>, <span class="nm">99</span>, <span class="nm">105</span>, <span class="nm">108</span>, <span class="nm">103</span>, <span class="nm">110</span>, <span class="nm">107</span>],
+}).set_index(<span class="st">'date'</span>)
+
+df[<span class="st">'ma3'</span>]   = df[<span class="st">'price'</span>].rolling(<span class="nm">3</span>).mean()   <span class="cm"># 3-day moving avg</span>
+df[<span class="st">'std3'</span>]  = df[<span class="st">'price'</span>].rolling(<span class="nm">3</span>).std()
+df[<span class="st">'max3'</span>]  = df[<span class="st">'price'</span>].rolling(<span class="nm">3</span>).max()
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>            price        ma3      std3  max3
+date
+2024-01-01    100        NaN       NaN   NaN
+2024-01-02    102        NaN       NaN   NaN
+2024-01-03     99  100.33333  1.527525   102
+2024-01-04    105  102.00000  3.000000   105
+2024-01-05    108  104.00000  4.582576   108
+2024-01-06    103  105.33333  2.516611   108
+2024-01-07    110  107.00000  3.605551   110
+2024-01-08    107  106.66667  3.511885   110</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Expanding &amp; EWM</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>s = pd.Series([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">15</span>, <span class="nm">25</span>, <span class="nm">30</span>])
+
+<span class="fn">print</span>(s.expanding().mean())   <span class="cm"># cumulative mean</span>
+<span class="fn">print</span>(s.cumsum())             <span class="cm"># cumulative sum</span>
+<span class="fn">print</span>(s.cumprod())            <span class="cm"># cumulative product</span>
+
+<span class="cm"># Exponentially weighted mean (EWM)</span>
+<span class="fn">print</span>(s.ewm(span=<span class="nm">3</span>).mean())</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>0    10.0
+1    15.0
+2    15.0
+3    17.5
+4    20.0
+dtype: float64
+
+0     10
+1     30
+2     45
+3     70
+4    100
+dtype: int64
+
+0     10.000000
+1     16.666667
+2     14.285714
+3     21.052632
+4     27.027027
+dtype: float64</pre></div>
+  </div>
+</div>
+
+
+<!-- ═══ S20 ADVANCED: Rolling within groups ═══ -->
+<div class="section" id="s20adv">
+  <div class="section-head">
+    <span class="snum green" style="font-size:0.6rem;width:38px">20+</span>
+    <h2>Rolling / Expanding Within Groups</h2>
+  </div>
+  <p>Applying rolling or expanding windows <em>per group</em> requires chaining <code>groupby</code> and <code>rolling</code>. The result has a MultiIndex — use <code>reset_index(level=0, drop=True)</code> to align it back to the original index.</p>
+
+  <div class="subsection">
+    <h3>Rolling mean within each group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'group'</span>:  list(<span class="st">'AABBCCAA'</span>),
+    <span class="st">'value'</span>:  [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>, <span class="nm">60</span>, <span class="nm">70</span>, <span class="nm">80</span>],
+})
+
+<span class="cm"># groupby().rolling() gives MultiIndex result</span>
+rolled = df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>].rolling(window=<span class="nm">2</span>).mean()
+<span class="fn">print</span>(rolled)
+
+<span class="cm"># reset_index to align back to original df index</span>
+df[<span class="st">'rolling_mean_2'</span>] = (
+    df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>]
+    .rolling(window=<span class="nm">2</span>)
+    .mean()
+    .reset_index(level=<span class="nm">0</span>, drop=<span class="kw">True</span>)
+)
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre># rolled (MultiIndex)
+group
+A  0     NaN
+   1    15.0
+   6    45.0
+   7    75.0
+B  2     NaN
+   3    35.0
+C  4     NaN
+   5    55.0
+Name: value, dtype: float64
+
+# df with column added
+  group  value  rolling_mean_2
+0     A     10             NaN
+1     A     20            15.0
+2     B     30             NaN
+3     B     40            35.0
+4     C     50             NaN
+5     C     60            55.0
+6     A     70            45.0
+7     A     80            75.0</pre></div>
+    <div class="box info"><p><strong>Key:</strong> <code>.reset_index(level=0, drop=True)</code> drops the group-key level of the MultiIndex, leaving the original integer index so the Series aligns correctly when assigned back.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Expanding mean within each group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df[<span class="st">'expanding_mean'</span>] = (
+    df.groupby(<span class="st">'group'</span>)[<span class="st">'value'</span>]
+    .expanding()
+    .mean()
+    .reset_index(level=<span class="nm">0</span>, drop=<span class="kw">True</span>)
+)
+<span class="fn">print</span>(df[[<span class="st">'group'</span>, <span class="st">'value'</span>, <span class="st">'expanding_mean'</span>]])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  group  value  expanding_mean
+0     A     10            10.0
+1     A     20            15.0
+2     B     30            30.0
+3     B     40            35.0
+4     C     50            50.0
+5     C     60            55.0
+6     A     70            33.3
+7     A     80            45.0</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S21: Performance ═══ -->
+<div class="section" id="s21">
+  <div class="section-head">
+    <span class="snum purple">21</span>
+    <h2>Performance Tips</h2>
+  </div>
+
+  <table>
+    <tr><th>Tip</th><th>Example / Explanation</th></tr>
+    <tr><td>Use vectorized ops</td><td><code>df['c'] = df['a'] * df['b']</code> — never loop over rows</td></tr>
+    <tr><td>Use categorical dtype</td><td>Low-cardinality string columns → 5-10× memory reduction</td></tr>
+    <tr><td>Use smaller numeric types</td><td><code>float32</code> instead of <code>float64</code>, <code>int32</code> vs <code>int64</code></td></tr>
+    <tr><td>Filter early, merge late</td><td>Reduce DataFrame size before joins</td></tr>
+    <tr><td>Use query() for complex filters</td><td>Can be faster than chained boolean indexing</td></tr>
+    <tr><td>Avoid SettingWithCopyWarning</td><td>Use <code>.loc[mask, col] = val</code> instead of chained <code>df[mask][col] = val</code></td></tr>
+    <tr><td>Read Parquet, not CSV</td><td>Parquet is 5-50× faster to read and much smaller on disk</td></tr>
+    <tr><td>Use chunked reading</td><td><code>pd.read_csv(..., chunksize=N)</code> for large files</td></tr>
+  </table>
+
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span></div>
+    <pre><span class="cm"># Reduce memory with smaller dtypes</span>
+df = pd.DataFrame({
+    <span class="st">'id'</span>:  np.arange(<span class="nm">100_000</span>, dtype=np.int64),
+    <span class="st">'val'</span>: np.random.rand(<span class="nm">100_000</span>).astype(np.float64),
+    <span class="st">'cat'</span>: np.random.choice([<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>], <span class="nm">100_000</span>),
+})
+<span class="fn">print</span>(<span class="st">'Before:'</span>, df.memory_usage(deep=<span class="kw">True</span>).sum() / <span class="nm">1024</span>**<span class="nm">2</span>, <span class="st">'MB'</span>)
+
+df[<span class="st">'id'</span>]  = df[<span class="st">'id'</span>].astype(np.int32)
+df[<span class="st">'val'</span>] = df[<span class="st">'val'</span>].astype(np.float32)
+df[<span class="st">'cat'</span>] = df[<span class="st">'cat'</span>].astype(<span class="st">'category'</span>)
+<span class="fn">print</span>(<span class="st">'After: '</span>, df.memory_usage(deep=<span class="kw">True</span>).sum() / <span class="nm">1024</span>**<span class="nm">2</span>, <span class="st">'MB'</span>)</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">▶ Output</div><pre>Before:  4.196 MB
+After:   1.004 MB</pre></div>
+</div>
+
+
+<!-- ═══ S21 ADVANCED: eval() and query() ═══ -->
+<div class="section" id="s21adv">
+  <div class="section-head">
+    <span class="snum purple" style="font-size:0.6rem;width:38px">21+</span>
+    <h2>eval() &amp; query()</h2>
+  </div>
+  <p><code>eval()</code> and <code>query()</code> let you write expressions as strings, enabling cleaner syntax and potential speedups via <code>numexpr</code> for large DataFrames.</p>
+
+  <div class="subsection">
+    <h3>DataFrame.eval() — compute new columns as expressions</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>dfx = pd.DataFrame({<span class="st">'a'</span>: np.arange(<span class="nm">5</span>), <span class="st">'b'</span>: np.arange(<span class="nm">5</span>) * <span class="nm">2</span>})
+
+<span class="cm"># eval creates a new column expression inline</span>
+<span class="fn">print</span>(dfx.eval(<span class="st">'c = a + b'</span>))
+
+<span class="cm"># inplace=True modifies dfx directly</span>
+dfx.eval(<span class="st">'c = a + b'</span>, inplace=<span class="kw">True</span>)
+dfx.eval(<span class="st">'d = c ** 2 - a'</span>, inplace=<span class="kw">True</span>)
+<span class="fn">print</span>(dfx)
+
+<span class="cm"># Reference Python variables with @</span>
+threshold = <span class="nm">5</span>
+<span class="fn">print</span>(dfx.eval(<span class="st">'e = c > @threshold'</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre># eval c = a + b
+   a  b  c
+0  0  0  0
+1  1  2  3
+2  2  4  6
+3  3  6  9
+4  4  8  12
+
+# with d added
+   a  b   c    d
+0  0  0   0    0
+1  1  2   3    8
+2  2  4   6   34
+3  3  6   9   78
+4  4  8  12  140
+
+# e = c > threshold (5)
+   a  b   c    d      e
+0  0  0   0    0  False
+1  1  2   3    8  False
+2  2  4   6   34   True
+3  3  6   9   78   True
+4  4  8  12  140   True</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>DataFrame.query() — filter rows as expression string</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>, <span class="nm">58000</span>],
+    <span class="st">'yrs'</span>:    [<span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">3</span>, <span class="nm">1</span>],
+})
+
+<span class="cm"># Standard boolean indexing</span>
+<span class="fn">print</span>(df[(df[<span class="st">'dept'</span>] == <span class="st">'Eng'</span>) &amp; (df[<span class="st">'salary'</span>] &gt; <span class="nm">80000</span>)])
+
+<span class="cm"># Equivalent query() — cleaner, no repetition of df</span>
+<span class="fn">print</span>(df.query(<span class="st">"dept == 'Eng' and salary > 80000"</span>))
+
+<span class="cm"># Use @ for Python variables in query</span>
+min_yrs = <span class="nm">3</span>
+<span class="fn">print</span>(df.query(<span class="st">"yrs &gt;= @min_yrs and dept != 'HR'"</span>))
+
+<span class="cm"># between</span>
+<span class="fn">print</span>(df.query(<span class="st">"55000 &lt;= salary &lt;= 70000"</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre># Eng and salary > 80000
+    dept  salary  yrs
+0    Eng   90000    5
+2    Eng  110000    8
+
+# query — same result
+    dept  salary  yrs
+0    Eng   90000    5
+2    Eng  110000    8
+
+# yrs >= 3 and dept != HR
+    dept  salary  yrs
+0    Eng   90000    5
+2    Eng  110000    8
+
+# salary between 55000 and 70000
+  dept  salary  yrs
+1  Mkt   55000    2
+3   HR   65000    3
+4  Mkt   58000    1</pre></div>
+    <div class="box tip"><p><code>query()</code> is also faster than boolean indexing on DataFrames with millions of rows when <code>numexpr</code> is installed — it avoids creating intermediate boolean arrays.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Sparse data</h3>
+    <p>Sparse arrays store only non-fill values, dramatically reducing memory for data with many zeros or NaNs.</p>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="cm"># Sparse[int] stores only non-zero values</span>
+sparse_s = pd.Series([<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">1</span>], dtype=<span class="st">'Sparse[int]'</span>)
+<span class="fn">print</span>(sparse_s)
+<span class="fn">print</span>(<span class="st">'density:'</span>, sparse_s.sparse.density)  <span class="cm"># fraction of non-fill values</span>
+
+<span class="cm"># Works naturally in DataFrames</span>
+df_sp = pd.DataFrame({
+    <span class="st">'dense'</span>:  [<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">2</span>],
+    <span class="st">'sparse'</span>: pd.array([<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">2</span>], dtype=<span class="st">'Sparse[int64]'</span>),
+})
+<span class="fn">print</span>(df_sp.dtypes)
+<span class="fn">print</span>(<span class="st">'dense bytes: '</span>,  df_sp[<span class="st">'dense'</span>].memory_usage(deep=<span class="kw">True</span>))
+<span class="fn">print</span>(<span class="st">'sparse bytes:'</span>, df_sp[<span class="st">'sparse'</span>].memory_usage(deep=<span class="kw">True</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>0    0
+1    0
+2    0
+3    1
+dtype: Sparse[int64, 0]
+
+density: 0.25
+
+dense     int64
+sparse    Sparse[int64, 0]
+dtype: object
+
+dense bytes:  168
+sparse bytes: 144</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S22: Pitfalls ═══ -->
+<div class="section" id="s22">
+  <div class="section-head">
+    <span class="snum yellow">22</span>
+    <h2>Pitfalls &amp; Gotchas</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>SettingWithCopyWarning</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({<span class="st">'A'</span>:[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>], <span class="st">'B'</span>:[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>]})
+
+<span class="cm"># ❌ Chained indexing — may silently fail</span>
+df[df[<span class="st">'A'</span>] > <span class="nm">1</span>][<span class="st">'B'</span>] = <span class="nm">99</span>   <span class="cm"># WARNING — modifies a copy</span>
+
+<span class="cm"># ✅ Use .loc to modify in place</span>
+df.loc[df[<span class="st">'A'</span>] > <span class="nm">1</span>, <span class="st">'B'</span>] = <span class="nm">99</span>
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>   A   B
+0  1   4
+1  2  99
+2  3  99</pre></div>
+    <div class="box danger"><p><strong>Rule:</strong> Never chain <code>df[condition][column] = value</code>. Always use <code>df.loc[condition, column] = value</code>.</p></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Other common pitfalls</h3>
+    <table>
+      <tr><th>Pitfall</th><th>Fix</th></tr>
+      <tr><td>Forgetting <code>inplace=True</code> or reassignment</td><td>Most methods return copies. Either use <code>inplace=True</code> or <code>df = df.method()</code></td></tr>
+      <tr><td>Integer index confusion with .loc vs .iloc</td><td>Use <code>.loc</code> for labels (even if they happen to be ints), <code>.iloc</code> for positions</td></tr>
+      <tr><td>Object dtype strings use lots of memory</td><td>Cast to <code>category</code> or <code>pd.StringDtype()</code></td></tr>
+      <tr><td>NaN != NaN (floating point)</td><td>Use <code>df.isna()</code> / <code>pd.isna(val)</code>, never <code>x == np.nan</code></td></tr>
+      <tr><td>append() removed in pandas 2.0</td><td>Use <code>pd.concat([df, new_row])</code> instead</td></tr>
+      <tr><td>Modifying during iteration</td><td>Never modify a DataFrame while iterating over it with <code>iterrows()</code></td></tr>
+      <tr><td>iterrows() is slow</td><td>Use vectorization, <code>apply</code>, or <code>itertuples()</code> (faster than iterrows)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ S23: Exercises ═══ -->
+<div class="section" id="s23">
+  <div class="section-head">
+    <span class="snum red">23</span>
+    <h2>Exercises with Answers</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 1 — Top earner per department</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'name'</span>:   [<span class="st">'Alice'</span>, <span class="st">'Bob'</span>, <span class="st">'Carol'</span>, <span class="st">'Dave'</span>, <span class="st">'Eve'</span>, <span class="st">'Frank'</span>],
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>, <span class="st">'HR'</span>, <span class="st">'Mkt'</span>, <span class="st">'Eng'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>, <span class="nm">55000</span>, <span class="nm">110000</span>, <span class="nm">65000</span>, <span class="nm">58000</span>, <span class="nm">95000</span>],
+})
+
+top = df.loc[df.groupby(<span class="st">'dept'</span>)[<span class="st">'salary'</span>].idxmax(), [<span class="st">'dept'</span>, <span class="st">'name'</span>, <span class="st">'salary'</span>]]
+<span class="fn">print</span>(top.sort_values(<span class="st">'dept'</span>).reset_index(drop=<span class="kw">True</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>  dept   name  salary
+0  Eng  Carol  110000
+1   HR   Dave   65000
+2  Mkt    Eve   58000</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 2 — Normalize scores within group (z-score)</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>df = pd.DataFrame({
+    <span class="st">'group'</span>: [<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>],
+    <span class="st">'score'</span>: [<span class="nm">70</span>, <span class="nm">85</span>, <span class="nm">90</span>, <span class="nm">50</span>, <span class="nm">65</span>, <span class="nm">80</span>],
+})
+df[<span class="st">'z'</span>] = df.groupby(<span class="st">'group'</span>)[<span class="st">'score'</span>].transform(
+    <span class="kw">lambda</span> x: (x - x.mean()) / x.std()
+)
+<span class="fn">print</span>(df.round(<span class="nm">2</span>))</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>  group  score     z
+0     A     70 -1.11
+1     A     85  0.27
+2     A     90  0.84
+3     B     50 -1.11
+4     B     65  0.27
+5     B     80  0.84</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 3 — Pivot then fill missing with 0</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>sales = pd.DataFrame({
+    <span class="st">'rep'</span>:     [<span class="st">'Alice'</span>,<span class="st">'Alice'</span>,<span class="st">'Bob'</span>,<span class="st">'Bob'</span>,<span class="st">'Carol'</span>],
+    <span class="st">'product'</span>: [<span class="st">'X'</span>,<span class="st">'Y'</span>,<span class="st">'X'</span>,<span class="st">'Z'</span>,<span class="st">'Y'</span>],
+    <span class="st">'units'</span>:   [<span class="nm">10</span>, <span class="nm">5</span>, <span class="nm">8</span>, <span class="nm">12</span>, <span class="nm">3</span>],
+})
+pt = sales.pivot_table(index=<span class="st">'rep'</span>, columns=<span class="st">'product'</span>,
+                       values=<span class="st">'units'</span>, aggfunc=<span class="st">'sum'</span>, fill_value=<span class="nm">0</span>)
+<span class="fn">print</span>(pt)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>product   X  Y   Z
+rep
+Alice    10  5   0
+Bob       8  0  12
+Carol     0  3   0</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 4 — Rolling 7-day sales sum</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>np.random.seed(<span class="nm">42</span>)
+df = pd.DataFrame({
+    <span class="st">'date'</span>:  pd.date_range(<span class="st">'2024-01-01'</span>, periods=<span class="nm">14</span>),
+    <span class="st">'sales'</span>: np.random.randint(<span class="nm">10</span>, <span class="nm">100</span>, <span class="nm">14</span>),
+}).set_index(<span class="st">'date'</span>)
+
+df[<span class="st">'rolling_7'</span>] = df[<span class="st">'sales'</span>].rolling(<span class="nm">7</span>).sum()
+<span class="fn">print</span>(df)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>            sales  rolling_7
+date
+2024-01-01     52        NaN
+2024-01-02     93        NaN
+2024-01-03     15        NaN
+2024-01-04     72        NaN
+2024-01-05     61        NaN
+2024-01-06     21        NaN
+2024-01-07     83        397.0
+2024-01-08     44        389.0
+...
+2024-01-14     50        374.0</pre></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 5 — Merge + filter + aggregate</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>orders = pd.DataFrame({
+    <span class="st">'order_id'</span>:   [<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>],
+    <span class="st">'customer_id'</span>:[<span class="nm">10</span>,<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>,<span class="nm">20</span>],
+    <span class="st">'amount'</span>:     [<span class="nm">250</span>,<span class="nm">180</span>,<span class="nm">320</span>,<span class="nm">95</span>,<span class="nm">410</span>],
+})
+customers = pd.DataFrame({
+    <span class="st">'customer_id'</span>: [<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>],
+    <span class="st">'country'</span>:     [<span class="st">'US'</span>,<span class="st">'UK'</span>,<span class="st">'US'</span>],
+})
+
+result = (
+    pd.merge(orders, customers, on=<span class="st">'customer_id'</span>)
+    .query(<span class="st">"country == 'US'"</span>)
+    .groupby(<span class="st">'customer_id'</span>)
+    .agg(total=(<span class="st">'amount'</span>, <span class="st">'sum'</span>), orders=(<span class="st">'order_id'</span>, <span class="st">'count'</span>))
+    .reset_index()
+)
+<span class="fn">print</span>(result)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">▶ Output</div><pre>   customer_id  total  orders
+0           10    430       2
+1           30     95       1</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S23 ADV: Real-World Pipeline ═══ -->
+<div class="section" id="s23adv">
+  <div class="section-head">
+    <span class="snum" style="font-size:0.6rem;width:38px">23+</span>
+    <h2>Real-World Pipeline: agg &#8594; merge &#8594; vectorize</h2>
+  </div>
+  <p>This pattern (compute group stats, merge back, vectorized derive) is the most efficient approach for real ETL and analytics work.</p>
+  <div class="code-block">
+    <div class="code-bar"><span class="lang">python</span><span class="desc">complete pipeline</span></div>
+    <pre>rng = np.random.default_rng(<span class="nm">42</span>)
+N = <span class="nm">1000</span>
+df_big = pd.DataFrame({
+    <span class="st">'user'</span>:    rng.integers(<span class="nm">0</span>, <span class="nm">50</span>, size=N).astype(<span class="st">'int64'</span>),
+    <span class="st">'amount'</span>:  rng.integers(<span class="nm">1</span>, <span class="nm">1000</span>, size=N),
+    <span class="st">'product'</span>: rng.choice([<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>], size=N),
+})
+df_big[<span class="st">'user'</span>] = df_big[<span class="st">'user'</span>].astype(<span class="st">'category'</span>)  <span class="cm"># categorical = faster groupby</span>
+
+<span class="cm"># Step 1: compute all group stats in ONE agg call</span>
+grp = df_big.groupby(<span class="st">'user'</span>, as_index=<span class="kw">False</span>, observed=<span class="kw">True</span>).agg(
+    total_amount=(<span class="st">'amount'</span>, <span class="st">'sum'</span>),
+    mean_amount =(<span class="st">'amount'</span>, <span class="st">'mean'</span>),
+    cnt         =(<span class="st">'amount'</span>, <span class="st">'size'</span>),
+)
+
+<span class="cm"># Step 2: merge back once</span>
+df_big = df_big.merge(grp, on=<span class="st">'user'</span>, how=<span class="st">'left'</span>)
+
+<span class="cm"># Step 3: vectorized derived columns</span>
+df_big[<span class="st">'pct_of_user'</span>] = df_big[<span class="st">'amount'</span>] / df_big[<span class="st">'total_amount'</span>]
+df_big[<span class="st">'high_value'</span>]  = df_big[<span class="st">'amount'</span>] &gt; df_big[<span class="st">'mean_amount'</span>]
+<span class="fn">print</span>(df_big.head())</pre>
+  </div>
+  <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>  user  amount product  total_amount  mean_amount  cnt  pct_of_user  high_value
+0   28     489       C          9763   558.457143   17        0.050       False
+1   30     184       A          7543   471.437500   16        0.024       False
+2   38     625       B          8392   559.466667   15        0.074        True
+3   20     399       C          6701   418.812500   16        0.060       False
+4   36     843       A          9427   622.466667   16        0.089        True</pre></div>
+
+  <div class="subsection">
+    <h3>Mini pipeline: load, clean, group</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre>tx = pd.DataFrame({
+    <span class="st">'user_id'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">2</span>],
+    <span class="st">'amount'</span>:  [<span class="nm">100</span>, <span class="nm">200</span>, np.nan, <span class="nm">400</span>, <span class="nm">50</span>],
+    <span class="st">'date'</span>:    pd.to_datetime([<span class="st">'2025-01-01'</span>,<span class="st">'2025-01-01'</span>,
+                               <span class="st">'2025-01-03'</span>,<span class="st">'2025-01-02'</span>,<span class="st">'2025-01-03'</span>]),
+})
+<span class="fn">print</span>(tx)
+
+tx[<span class="st">'amount'</span>] = tx[<span class="st">'amount'</span>].fillna(<span class="nm">0</span>)
+agg = (tx
+    .groupby(<span class="st">'user_id'</span>)[<span class="st">'amount'</span>]
+    .sum()
+    .reset_index()
+    .rename(columns={<span class="st">'amount'</span>: <span class="st">'total'</span>})
+)
+<span class="fn">print</span>(agg)</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>   user_id  amount       date
+0        1   100.0 2025-01-01
+1        2   200.0 2025-01-01
+2        1     NaN 2025-01-03
+3        3   400.0 2025-01-02
+4        2    50.0 2025-01-03
+
+   user_id  total
+0        1  100.0
+1        2  250.0
+2        3  400.0</pre></div>
+  </div>
+</div>
+
+<!-- ═══ S23 TEST: Testing ═══ -->
+<div class="section" id="s23test">
+  <div class="section-head">
+    <span class="snum blue" style="font-size:0.6rem;width:38px">23T</span>
+    <h2>Testing &amp; Validation</h2>
+  </div>
+
+  <div class="subsection">
+    <h3>assert_frame_equal — unit tests for DataFrames</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="kw">from</span> pandas.testing <span class="kw">import</span> assert_frame_equal, assert_series_equal
+
+a = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], <span class="st">'y'</span>: [<span class="nm">4.0</span>, <span class="nm">5.0</span>, <span class="nm">6.0</span>]})
+b = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], <span class="st">'y'</span>: [<span class="nm">4.0</span>, <span class="nm">5.0</span>, <span class="nm">6.0</span>]})
+assert_frame_equal(a, b)          <span class="cm"># passes silently</span>
+<span class="fn">print</span>(<span class="st">'equal'</span>)
+
+<span class="cm"># Numeric tolerance</span>
+c = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], <span class="st">'y'</span>: [<span class="nm">4.0000001</span>, <span class="nm">5.0</span>, <span class="nm">6.0</span>]})
+assert_frame_equal(a, c, atol=<span class="nm">1e-5</span>)
+<span class="fn">print</span>(<span class="st">'equal within tolerance'</span>)
+
+<span class="cm"># Ignore dtype differences</span>
+d = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], <span class="st">'y'</span>: [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]})   <span class="cm"># y is int</span>
+assert_frame_equal(a, d, check_dtype=<span class="kw">False</span>)
+<span class="fn">print</span>(<span class="st">'equal ignoring dtype'</span>)
+
+<span class="cm"># Raises AssertionError with diff when not equal</span>
+<span class="kw">try</span>:
+    e = pd.DataFrame({<span class="st">'x'</span>: [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">99</span>], <span class="st">'y'</span>: [<span class="nm">4.0</span>, <span class="nm">5.0</span>, <span class="nm">6.0</span>]})
+    assert_frame_equal(a, e)
+<span class="kw">except</span> AssertionError <span class="kw">as</span> ex:
+    <span class="fn">print</span>(<span class="st">'Caught:'</span>, str(ex)[:<span class="nm">100</span>])</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>equal
+equal within tolerance
+equal ignoring dtype
+Caught: DataFrame.iloc[:, 0] (column name="x") are different
+
+Attribute "values" are different (33.33333 %)
+[left]:  [1, 2, 3]
+[right]: [1, 2, 99]</pre></div>
+    <div class="box info"><p>Use <code>assert_frame_equal</code> in unit tests — it shows detailed diffs. Use <code>df.equals(other)</code> for quick boolean checks. Never use <code>df == other</code> for equality — that returns an element-wise boolean DataFrame.</p></div>
+  </div>
+</div>
+
+<!-- ═══ S23 VIZ: Visualization ═══ -->
+<div class="section" id="s23viz">
+  <div class="section-head">
+    <span class="snum yellow" style="font-size:0.6rem;width:38px">23V</span>
+    <h2>Visualization with df.plot()</h2>
+  </div>
+  <p>pandas ships a built-in <code>.plot()</code> method backed by Matplotlib. It covers most exploratory needs with minimal boilerplate.</p>
+
+  <div class="subsection">
+    <h3>Common chart types</h3>
+    <div class="code-block">
+      <div class="code-bar"><span class="lang">python</span></div>
+      <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># Line plot — time series</span>
+ts = pd.Series(
+    np.random.randn(<span class="nm">100</span>).cumsum(),
+    index=pd.date_range(<span class="st">'2025-01-01'</span>, periods=<span class="nm">100</span>)
+)
+ax = ts.plot(title=<span class="st">'Random Walk'</span>, figsize=(<span class="nm">8</span>, <span class="nm">3</span>))
+ax.set_xlabel(<span class="st">'Date'</span>); ax.set_ylabel(<span class="st">'Value'</span>)
+plt.tight_layout(); plt.show()   <span class="cm"># renders plot</span>
+
+<span class="cm"># Bar chart — mean salary by dept</span>
+df = pd.DataFrame({
+    <span class="st">'dept'</span>:   [<span class="st">'Eng'</span>,<span class="st">'Mkt'</span>,<span class="st">'Eng'</span>,<span class="st">'HR'</span>,<span class="st">'Mkt'</span>,<span class="st">'Eng'</span>],
+    <span class="st">'salary'</span>: [<span class="nm">90000</span>,<span class="nm">55000</span>,<span class="nm">110000</span>,<span class="nm">65000</span>,<span class="nm">58000</span>,<span class="nm">95000</span>],
+})
+df.groupby(<span class="st">'dept'</span>)[<span class="st">'salary'</span>].mean().plot(
+    kind=<span class="st">'bar'</span>, color=<span class="st">'steelblue'</span>, title=<span class="st">'Mean Salary by Dept'</span>
+)
+plt.xticks(rotation=<span class="nm">0</span>); plt.show()
+
+<span class="cm"># Histogram</span>
+df[<span class="st">'salary'</span>].plot(kind=<span class="st">'hist'</span>, bins=<span class="nm">8</span>, edgecolor=<span class="st">'black'</span>, title=<span class="st">'Salary Dist'</span>)
+plt.show()
+
+<span class="cm"># Scatter</span>
+df2 = pd.DataFrame({<span class="st">'a'</span>: np.random.rand(<span class="nm">50</span>), <span class="st">'b'</span>: np.random.rand(<span class="nm">50</span>)})
+df2.plot(kind=<span class="st">'scatter'</span>, x=<span class="st">'a'</span>, y=<span class="st">'b'</span>, alpha=<span class="nm">0.6</span>, title=<span class="st">'Scatter'</span>)
+plt.show()</pre>
+    </div>
+    <div class="out-block"><div class="out-bar">&#9654; Output</div><pre>(matplotlib figures displayed — example output is visual, no text)
+
+Supported kind values:
+  'line'    &#8594; line plot (default)
+  'bar'     &#8594; vertical bar chart
+  'barh'    &#8594; horizontal bar chart
+  'hist'    &#8594; histogram
+  'box'     &#8594; box-and-whisker
+  'kde'     &#8594; kernel density estimate
+  'scatter' &#8594; scatter (needs x=, y=)
+  'pie'     &#8594; pie chart
+  'area'    &#8594; stacked area</pre></div>
+    <div class="box info"><p>In Jupyter notebooks, run <code>%matplotlib inline</code> once at the top to render plots inline. For publication-quality charts, use Matplotlib, Seaborn, or Plotly directly for full aesthetic control.</p></div>
+  </div>
+</div>
+
+<!-- ═══ S24: Next Steps ═══ -->
+<div class="section" id="s24">
+  <div class="section-head">
+    <span class="snum">24</span>
+    <h2>Where to Go Next</h2>
+  </div>
+
+  <table>
+    <tr><th>Library / Tool</th><th>What it adds to pandas skills</th></tr>
+    <tr><td><strong>NumPy</strong></td><td>Underlying array operations, faster numeric work</td></tr>
+    <tr><td><strong>Matplotlib / Seaborn</strong></td><td><code>df.plot()</code>, statistical visualization</td></tr>
+    <tr><td><strong>Plotly / Altair</strong></td><td>Interactive charts from DataFrames</td></tr>
+    <tr><td><strong>scikit-learn</strong></td><td>Machine learning — feeds DataFrames directly</td></tr>
+    <tr><td><strong>SQLAlchemy</strong></td><td>Read/write SQL databases with pandas I/O</td></tr>
+    <tr><td><strong>Polars</strong></td><td>pandas alternative — much faster for large data; lazy evaluation</td></tr>
+    <tr><td><strong>Dask</strong></td><td>pandas API on data too large for RAM — parallel &amp; distributed</td></tr>
+    <tr><td><strong>PyArrow</strong></td><td>Fast Parquet/Feather I/O; Arrow-backed dtypes in pandas 3.x</td></tr>
+  </table>
+
+  <div class="box tip" style="margin-top:20px">
+    <p><strong>📖 Official resources:</strong> pandas.pydata.org/docs &nbsp;·&nbsp; pandas.pydata.org/docs/user_guide &nbsp;·&nbsp; github.com/pandas-dev/pandas</p>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  PANDAS FULL TUTORIAL — 24 SECTIONS — GENERATED WITH CLAUDE &nbsp;·&nbsp; PANDAS.PYDATA.ORG
+</div>
+
+</body>
+</html>

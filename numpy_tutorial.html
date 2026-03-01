@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy Full Tutorial</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.7; }
+  
+  .hero { background: linear-gradient(135deg, #1a1f36 0%, #0d1b2a 100%); padding: 60px 40px; text-align: center; border-bottom: 1px solid #2d3748; }
+  .hero h1 { font-size: 2.8rem; font-weight: 800; background: linear-gradient(90deg, #4299e1, #9f7aea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: #94a3b8; margin-top: 12px; font-size: 1.1rem; }
+  .badge { display: inline-block; background: #4299e120; color: #63b3ed; border: 1px solid #4299e140; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; margin: 4px; }
+
+  .toc { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 24px 32px; max-width: 860px; margin: 40px auto; }
+  .toc h2 { color: #63b3ed; margin-bottom: 16px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: #a0aec0; text-decoration: none; transition: color 0.2s; }
+  .toc a:hover { color: #63b3ed; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .section { margin-top: 56px; }
+  .section-title { font-size: 1.6rem; font-weight: 700; color: #e2e8f0; padding-bottom: 12px; border-bottom: 2px solid #2d3748; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .section-title .num { background: linear-gradient(135deg, #4299e1, #9f7aea); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; flex-shrink: 0; }
+
+  .subsection { margin-top: 32px; }
+  .subsection h3 { color: #9f7aea; font-size: 1.1rem; margin-bottom: 14px; }
+
+  p { color: #94a3b8; margin-bottom: 14px; }
+
+  .code-block { background: #141824; border: 1px solid #2d3748; border-radius: 10px; overflow: hidden; margin: 16px 0; }
+  .code-header { background: #1e2535; padding: 8px 16px; font-size: 0.75rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2d3748; }
+  .code-header span { color: #4299e1; font-weight: 600; }
+  pre { padding: 20px; overflow-x: auto; font-size: 0.88rem; line-height: 1.7; font-family: 'Fira Code', 'Consolas', monospace; }
+  
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .st { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; }
+  .nm { color: #f78c6c; }
+  .op { color: #89ddff; }
+  .cl { color: #ffcb6b; }
+
+  .output-block { background: #0d1117; border: 1px solid #1a3a1a; border-radius: 10px; overflow: hidden; margin: 8px 0 20px; }
+  .output-header { background: #0d2010; padding: 6px 16px; font-size: 0.75rem; color: #48bb78; border-bottom: 1px solid #1a3a1a; }
+  .output-block pre { color: #6ee7b7; padding: 16px 20px; font-size: 0.85rem; }
+
+  .info-box { background: #1a2035; border-left: 3px solid #4299e1; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; color: #94a3b8; font-size: 0.92rem; }
+  .info-box strong { color: #63b3ed; }
+  
+  .tip-box { background: #1a2a1a; border-left: 3px solid #48bb78; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; color: #94a3b8; font-size: 0.92rem; }
+  .tip-box strong { color: #68d391; }
+
+  .warn-box { background: #2a1a0d; border-left: 3px solid #ed8936; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; color: #94a3b8; font-size: 0.92rem; }
+  .warn-box strong { color: #fbd38d; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+  th { background: #1e2535; color: #63b3ed; padding: 10px 14px; text-align: left; border: 1px solid #2d3748; }
+  td { padding: 9px 14px; border: 1px solid #2d3748; color: #94a3b8; }
+  tr:nth-child(even) td { background: #141824; }
+
+  hr { border: none; border-top: 1px solid #1e2535; margin: 48px 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>NumPy Complete Tutorial</h1>
+  <p>The essential library for scientific computing in Python</p>
+  <div style="margin-top:16px">
+    <span class="badge">Arrays</span>
+    <span class="badge">Indexing</span>
+    <span class="badge">Broadcasting</span>
+    <span class="badge">Math Operations</span>
+    <span class="badge">Linear Algebra</span>
+    <span class="badge">Statistics</span>
+    <span class="badge">Random</span>
+    <span class="badge">einsum</span>
+    <span class="badge">FFT</span>
+    <span class="badge">Masked Arrays</span>
+    <span class="badge">Performance</span>
+    <span class="badge">Exercises</span>
+  </div>
+</div>
+
+<div class="toc">
+  <h2>📋 Table of Contents</h2>
+  <ol>
+    <li><a href="#s0">What is NumPy?</a></li>
+    <li><a href="#s1">Installation & Import</a></li>
+    <li><a href="#s2">Creating Arrays</a></li>
+    <li><a href="#s3">Array Attributes</a></li>
+    <li><a href="#s4">Indexing & Slicing</a></li>
+    <li><a href="#s5">Array Manipulation (Reshape, Flatten, Transpose)</a></li>
+    <li><a href="#s6">Mathematical Operations</a></li>
+    <li><a href="#s7">Broadcasting</a></li>
+    <li><a href="#s8">Comparison & Boolean Indexing</a></li>
+    <li><a href="#s9">Aggregation & Statistics</a></li>
+    <li><a href="#s10">Linear Algebra</a></li>
+    <li><a href="#s11">Random Module</a></li>
+    <li><a href="#s12">Sorting & Searching</a></li>
+    <li><a href="#s13">Stacking & Splitting</a></li>
+    <li><a href="#s14">Data Types & Structured Arrays</a></li>
+    <li><a href="#s15">Saving & Loading</a></li>
+    <li><a href="#s16">Masked Arrays</a></li>
+    <li><a href="#s17">Performance Tips</a></li>
+    <li><a href="#s18">Advanced — Strides, sliding_window_view, einsum, FFT</a></li>
+    <li><a href="#s19">Common Pitfalls & Gotchas</a></li>
+    <li><a href="#s20">Exercises with Answers</a></li>
+    <li><a href="#s21">Mini-Project Ideas & Where to Go Next</a></li>
+  </ol>
+</div>
+
+<div class="container">
+
+<!-- ─── SECTION 0 ─────────────────────────────────── -->
+<div class="section" id="s0">
+  <div class="section-title"><span class="num" style="font-size:0.75rem">0</span> What is NumPy?</div>
+  <p>NumPy (Numerical Python) is the foundational library for scientific computing in Python. It provides:</p>
+  <table>
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td><strong>ndarray</strong></td><td>N-dimensional homogeneous numeric array — the core data structure</td></tr>
+    <tr><td><strong>ufuncs</strong></td><td>Fast vectorized element-wise operations (sin, exp, add, …)</td></tr>
+    <tr><td><strong>Broadcasting</strong></td><td>Arithmetic on arrays of different shapes without explicit loops</td></tr>
+    <tr><td><strong>Linear Algebra</strong></td><td>dot, solve, inv, eig, svd, norm …</td></tr>
+    <tr><td><strong>Random Sampling</strong></td><td>Pseudorandom numbers, distributions, permutations</td></tr>
+    <tr><td><strong>I/O</strong></td><td>Save/load arrays in binary (.npy/.npz) and text formats</td></tr>
+    <tr><td><strong>Foundation</strong></td><td>Underlies pandas, scikit-learn, TensorFlow, SciPy, Matplotlib, …</td></tr>
+  </table>
+  <div class="info-box">
+    <strong>Key insight:</strong> NumPy arrays store data in contiguous memory blocks and operations are implemented in compiled C/Fortran — making them 10–100× faster than pure Python loops for numeric work.
+  </div>
+</div>
+
+<!-- ─── SECTION 1 ─────────────────────────────────── -->
+<div class="section" id="s1">
+  <div class="section-title"><span class="num">1</span> Installation &amp; Import</div>
+  <p>NumPy is pre-installed in most scientific Python distributions. Install it via pip or conda.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span>Shell</span> installation</div>
+    <pre><span class="cm"># Install via pip</span>
+pip install numpy
+
+<span class="cm"># Or conda</span>
+conda install numpy</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span>Python</span> import convention</div>
+    <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="fn">print</span>(np.__version__)</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>1.26.4</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 2 ─────────────────────────────────── -->
+<div class="section" id="s2">
+  <div class="section-title"><span class="num">2</span> Creating Arrays</div>
+
+  <div class="subsection">
+    <h3>From Python lists</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># 1D array</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>])
+<span class="fn">print</span>(a)
+
+<span class="cm"># 2D array</span>
+b = np.array([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+              [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]])
+<span class="fn">print</span>(b)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[1 2 3 4 5]
+
+[[1 2 3]
+ [4 5 6]]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Built-in creation functions</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="fn">print</span>(np.zeros((<span class="nm">2</span>, <span class="nm">3</span>)))       <span class="cm"># All zeros</span>
+<span class="fn">print</span>(np.ones((<span class="nm">2</span>, <span class="nm">4</span>)))        <span class="cm"># All ones</span>
+<span class="fn">print</span>(np.full((<span class="nm">2</span>, <span class="nm">3</span>), <span class="nm">7</span>))    <span class="cm"># Filled with 7</span>
+<span class="fn">print</span>(np.eye(<span class="nm">3</span>))              <span class="cm"># Identity matrix</span>
+<span class="fn">print</span>(np.empty((<span class="nm">2</span>, <span class="nm">2</span>)))       <span class="cm"># Uninitialized (garbage values)</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[[0. 0. 0.]
+ [0. 0. 0.]]
+
+[[1. 1. 1. 1.]
+ [1. 1. 1. 1.]]
+
+[[7 7 7]
+ [7 7 7]]
+
+[[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+
+[[6.23e-307 4.67e-307]
+ [1.37e-306 1.07e-306]]  ← varies</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Range-based arrays</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># arange(start, stop, step) — like Python range()</span>
+<span class="fn">print</span>(np.arange(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">2</span>))
+
+<span class="cm"># linspace(start, stop, num) — evenly spaced floats</span>
+<span class="fn">print</span>(np.linspace(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">5</span>))
+
+<span class="cm"># logspace — logarithmically spaced</span>
+<span class="fn">print</span>(np.logspace(<span class="nm">0</span>, <span class="nm">2</span>, <span class="nm">4</span>))   <span class="cm"># 10^0 to 10^2</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[0 2 4 6 8]
+
+[0.   0.25 0.5  0.75 1.  ]
+
+[  1.          4.64158883  21.5443469  100.        ]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 3 ─────────────────────────────────── -->
+<div class="section" id="s3">
+  <div class="section-title"><span class="num">3</span> Array Attributes</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+              [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]])
+
+<span class="fn">print</span>(<span class="st">"shape:"</span>,   a.shape)    <span class="cm"># (rows, cols)</span>
+<span class="fn">print</span>(<span class="st">"ndim:"</span>,    a.ndim)     <span class="cm"># number of dimensions</span>
+<span class="fn">print</span>(<span class="st">"size:"</span>,    a.size)     <span class="cm"># total elements</span>
+<span class="fn">print</span>(<span class="st">"dtype:"</span>,   a.dtype)    <span class="cm"># data type</span>
+<span class="fn">print</span>(<span class="st">"itemsize:"</span>,a.itemsize) <span class="cm"># bytes per element</span>
+<span class="fn">print</span>(<span class="st">"nbytes:"</span>,  a.nbytes)   <span class="cm"># total bytes</span></pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>shape:    (2, 3)
+ndim:     2
+size:     6
+dtype:    int64
+itemsize: 8
+nbytes:   48</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 4 ─────────────────────────────────── -->
+<div class="section" id="s4">
+  <div class="section-title"><span class="num">4</span> Indexing &amp; Slicing</div>
+
+  <div class="subsection">
+    <h3>1D Indexing</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>])
+
+<span class="fn">print</span>(a[<span class="nm">0</span>])        <span class="cm"># first element</span>
+<span class="fn">print</span>(a[<span class="nm">-1</span>])       <span class="cm"># last element</span>
+<span class="fn">print</span>(a[<span class="nm">1</span>:<span class="nm">4</span>])      <span class="cm"># slice index 1 to 3</span>
+<span class="fn">print</span>(a[::<span class="nm">2</span>])      <span class="cm"># every 2nd element</span>
+<span class="fn">print</span>(a[:<span class="nm">:-1</span>])     <span class="cm"># reversed</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>10
+50
+[20 30 40]
+[10 30 50]
+[50 40 30 20 10]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Views vs Copies — Important Gotcha</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># Slices are VIEWS — modifying them modifies the original!</span>
+a = np.arange(<span class="nm">10</span>)
+s = a[<span class="nm">2</span>:<span class="nm">5</span>]              <span class="cm"># s is a view, not a copy</span>
+<span class="fn">print</span>(<span class="st">"s before:"</span>, s)
+s[<span class="nm">0</span>] = <span class="nm">99</span>
+<span class="fn">print</span>(<span class="st">"s after s[0]=99:"</span>, s)
+<span class="fn">print</span>(<span class="st">"original a:"</span>, a)    <span class="cm"># a is mutated!</span>
+
+<span class="cm"># Use .copy() to avoid this</span>
+a = np.arange(<span class="nm">10</span>)
+s_copy = a[<span class="nm">2</span>:<span class="nm">5</span>].copy()
+s_copy[<span class="nm">0</span>] = <span class="nm">99</span>
+<span class="fn">print</span>(<span class="st">"a after modifying copy:"</span>, a)  <span class="cm"># unchanged</span>
+
+<span class="cm"># Fancy indexing ALWAYS returns a copy</span>
+fi = a[[<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">5</span>]]
+fi[<span class="nm">0</span>] = <span class="nm">999</span>
+<span class="fn">print</span>(<span class="st">"a after fancy index modify:"</span>, a)  <span class="cm"># unchanged</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>s before: [2 3 4]
+s after s[0]=99: [99  3  4]
+original a: [ 0  1 99  3  4  5  6  7  8  9]
+
+a after modifying copy: [0 1 2 3 4 5 6 7 8 9]
+
+a after fancy index modify: [0 1 2 3 4 5 6 7 8 9]</pre>
+    </div>
+    <div class="warn-box"><strong>⚠ Rule:</strong> Slices → views. Fancy/boolean indexing → copies. When in doubt, call <code>.copy()</code>. Check with <code>np.shares_memory(a, s)</code>.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>2D Indexing</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>m = np.array([[<span class="nm">1</span>,  <span class="nm">2</span>,  <span class="nm">3</span>],
+              [<span class="nm">4</span>,  <span class="nm">5</span>,  <span class="nm">6</span>],
+              [<span class="nm">7</span>,  <span class="nm">8</span>,  <span class="nm">9</span>]])
+
+<span class="fn">print</span>(m[<span class="nm">0</span>, <span class="nm">1</span>])      <span class="cm"># row 0, col 1</span>
+<span class="fn">print</span>(m[<span class="nm">1</span>, :])      <span class="cm"># entire row 1</span>
+<span class="fn">print</span>(m[:, <span class="nm">2</span>])      <span class="cm"># entire col 2</span>
+<span class="fn">print</span>(m[<span class="nm">0</span>:<span class="nm">2</span>, <span class="nm">1</span>:<span class="nm">3</span>])  <span class="cm"># sub-matrix</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>2
+[4 5 6]
+[3 6 9]
+[[2 3]
+ [5 6]]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Fancy Indexing</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>])
+
+<span class="cm"># Index with a list of indices</span>
+<span class="fn">print</span>(a[[<span class="nm">0</span>, <span class="nm">2</span>, <span class="nm">4</span>]])
+
+<span class="cm"># Boolean mask</span>
+mask = a > <span class="nm">25</span>
+<span class="fn">print</span>(mask)
+<span class="fn">print</span>(a[mask])</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[10 30 50]
+
+[False False  True  True  True]
+
+[30 40 50]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 5 ─────────────────────────────────── -->
+<div class="section" id="s5">
+  <div class="section-title"><span class="num">5</span> Array Manipulation</div>
+
+  <div class="subsection">
+    <h3>Reshape</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.arange(<span class="nm">12</span>)
+<span class="fn">print</span>(a)
+
+b = a.reshape(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(b)
+
+<span class="cm"># -1 means "infer this dimension"</span>
+c = a.reshape(<span class="nm">2</span>, -<span class="nm">1</span>)
+<span class="fn">print</span>(c.shape)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[ 0  1  2  3  4  5  6  7  8  9 10 11]
+
+[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+
+(2, 6)</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Flatten, Ravel &amp; Transpose</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>m = np.array([[<span class="nm">1</span>, <span class="nm">2</span>], [<span class="nm">3</span>, <span class="nm">4</span>]])
+
+<span class="fn">print</span>(m.flatten())    <span class="cm"># returns a copy</span>
+<span class="fn">print</span>(m.ravel())      <span class="cm"># returns a view if possible</span>
+<span class="fn">print</span>(m.T)            <span class="cm"># transpose</span>
+<span class="fn">print</span>(np.transpose(m))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[1 2 3 4]
+
+[1 2 3 4]
+
+[[1 3]
+ [2 4]]
+
+[[1 3]
+ [2 4]]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Expand &amp; Squeeze Dims</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])          <span class="cm"># shape (3,)</span>
+b = np.expand_dims(a, axis=<span class="nm">0</span>)   <span class="cm"># shape (1, 3)</span>
+c = np.expand_dims(a, axis=<span class="nm">1</span>)   <span class="cm"># shape (3, 1)</span>
+
+<span class="fn">print</span>(b.shape, c.shape)
+
+d = np.squeeze(b)                 <span class="cm"># removes dim of size 1 → (3,)</span>
+<span class="fn">print</span>(d.shape)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>(1, 3) (3, 1)
+
+(3,)</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 6 ─────────────────────────────────── -->
+<div class="section" id="s6">
+  <div class="section-title"><span class="num">6</span> Mathematical Operations</div>
+
+  <div class="subsection">
+    <h3>Element-wise arithmetic</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>])
+b = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>])
+
+<span class="fn">print</span>(a + b)
+<span class="fn">print</span>(a - b)
+<span class="fn">print</span>(a * b)
+<span class="fn">print</span>(b / a)
+<span class="fn">print</span>(b // a)   <span class="cm"># floor division</span>
+<span class="fn">print</span>(a ** <span class="nm">2</span>)   <span class="cm"># power</span>
+<span class="fn">print</span>(b % <span class="nm">25</span>)   <span class="cm"># modulo</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[11 22 33 44]
+[ -9 -18 -27 -36]
+[ 10  40  90 160]
+[10. 10. 10. 10.]
+[10 10 10 10]
+[ 1  4  9 16]
+[10 20  5 15]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Universal Functions (ufuncs)</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.array([<span class="nm">0</span>, np.pi/<span class="nm">2</span>, np.pi])
+
+<span class="fn">print</span>(np.sin(a))
+<span class="fn">print</span>(np.cos(a))
+<span class="fn">print</span>(np.sqrt(np.array([<span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">9</span>, <span class="nm">16</span>])))
+<span class="fn">print</span>(np.exp(np.array([<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>])))
+<span class="fn">print</span>(np.log(np.array([<span class="nm">1</span>, np.e, np.e**<span class="nm">2</span>])))
+<span class="fn">print</span>(np.abs(np.array([-<span class="nm">3</span>, <span class="nm">4</span>, -<span class="nm">5</span>])))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[0.000e+00 1.000e+00 1.225e-16]
+[ 1.000e+00  6.123e-17 -1.000e+00]
+[1. 2. 3. 4.]
+[1.    2.718 7.389]
+[0. 1. 2.]
+[3 4 5]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 7 ─────────────────────────────────── -->
+<div class="section" id="s7">
+  <div class="section-title"><span class="num">7</span> Broadcasting</div>
+  <p>Broadcasting allows NumPy to work with arrays of different shapes in arithmetic operations.</p>
+  <div class="info-box"><strong>Rule:</strong> Two dimensions are compatible when they are equal, or one of them is 1. NumPy pads shapes on the left with 1s as needed.</div>
+
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre><span class="cm"># Scalar broadcast</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+<span class="fn">print</span>(a + <span class="nm">10</span>)          <span class="cm"># 10 broadcast to [10,10,10]</span>
+
+<span class="cm"># Shape (3,) broadcast with (3,3)</span>
+m = np.ones((<span class="nm">3</span>, <span class="nm">3</span>))
+<span class="fn">print</span>(m + a)
+
+<span class="cm"># Column vector + row vector → 2D outer sum</span>
+col = np.array([[<span class="nm">1</span>], [<span class="nm">2</span>], [<span class="nm">3</span>]])   <span class="cm"># shape (3,1)</span>
+row = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>])      <span class="cm"># shape (3,)</span>
+<span class="fn">print</span>(col + row)</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[11 12 13]
+
+[[2. 3. 4.]
+ [2. 3. 4.]
+ [2. 3. 4.]]
+
+[[11 21 31]
+ [12 22 32]
+ [13 23 33]]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 8 ─────────────────────────────────── -->
+<div class="section" id="s8">
+  <div class="section-title"><span class="num">8</span> Comparison &amp; Boolean Indexing</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([<span class="nm">5</span>, <span class="nm">10</span>, <span class="nm">15</span>, <span class="nm">20</span>, <span class="nm">25</span>])
+
+<span class="fn">print</span>(a > <span class="nm">12</span>)                         <span class="cm"># element-wise comparison</span>
+<span class="fn">print</span>(a[a > <span class="nm">12</span>])                       <span class="cm"># boolean indexing</span>
+<span class="fn">print</span>(a[(a > <span class="nm">8</span>) & (a < <span class="nm">22</span>)])          <span class="cm"># AND condition</span>
+<span class="fn">print</span>(a[(a < <span class="nm">8</span>) | (a > <span class="nm">22</span>)])          <span class="cm"># OR condition</span>
+
+<span class="cm"># where — like ternary operator</span>
+<span class="fn">print</span>(np.where(a > <span class="nm">12</span>, <span class="st">"big"</span>, <span class="st">"small"</span>))
+
+<span class="cm"># Returns indices where condition is True</span>
+<span class="fn">print</span>(np.where(a > <span class="nm">12</span>))</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[False False  True  True  True]
+[15 20 25]
+[10 15 20]
+[ 5 25]
+['small' 'small' 'big' 'big' 'big']
+(array([2, 3, 4]),)</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 9 ─────────────────────────────────── -->
+<div class="section" id="s9">
+  <div class="section-title"><span class="num">9</span> Aggregation &amp; Statistics</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+              [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]])
+
+<span class="fn">print</span>(<span class="st">"sum:"</span>,      a.sum())
+<span class="fn">print</span>(<span class="st">"sum axis0:"</span>, a.sum(axis=<span class="nm">0</span>))    <span class="cm"># column sums</span>
+<span class="fn">print</span>(<span class="st">"sum axis1:"</span>, a.sum(axis=<span class="nm">1</span>))    <span class="cm"># row sums</span>
+<span class="fn">print</span>(<span class="st">"mean:"</span>,     a.mean())
+<span class="fn">print</span>(<span class="st">"std:"</span>,      a.std())
+<span class="fn">print</span>(<span class="st">"var:"</span>,      a.var())
+<span class="fn">print</span>(<span class="st">"min:"</span>,      a.min())
+<span class="fn">print</span>(<span class="st">"max:"</span>,      a.max())
+<span class="fn">print</span>(<span class="st">"argmin:"</span>,   a.argmin())         <span class="cm"># index of min (flattened)</span>
+<span class="fn">print</span>(<span class="st">"argmax:"</span>,   a.argmax())         <span class="cm"># index of max (flattened)</span>
+<span class="fn">print</span>(<span class="st">"median:"</span>,   np.median(a))
+<span class="fn">print</span>(<span class="st">"percentile 75:"</span>, np.percentile(a, <span class="nm">75</span>))
+<span class="fn">print</span>(<span class="st">"cumsum:"</span>,   a.cumsum(axis=<span class="nm">1</span>))</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>sum:       21
+sum axis0: [5 7 9]
+sum axis1: [ 6 15]
+mean:      3.5
+std:       1.7078251...
+var:       2.9166666...
+min:       1
+max:       6
+argmin:    0
+argmax:    5
+median:    3.5
+percentile 75: 5.25
+cumsum:    [[ 1  3  6]
+            [ 4  9 15]]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 10 ─────────────────────────────────── -->
+<div class="section" id="s10">
+  <div class="section-title"><span class="num">10</span> Linear Algebra</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>A = np.array([[<span class="nm">1</span>, <span class="nm">2</span>],
+              [<span class="nm">3</span>, <span class="nm">4</span>]])
+B = np.array([[<span class="nm">5</span>, <span class="nm">6</span>],
+              [<span class="nm">7</span>, <span class="nm">8</span>]])
+
+<span class="cm"># Matrix multiplication</span>
+<span class="fn">print</span>(np.dot(A, B))
+<span class="fn">print</span>(A @ B)            <span class="cm"># same as np.dot for 2D</span>
+
+<span class="cm"># Determinant</span>
+<span class="fn">print</span>(np.linalg.det(A))
+
+<span class="cm"># Inverse</span>
+<span class="fn">print</span>(np.linalg.inv(A))
+
+<span class="cm"># Eigenvalues &amp; eigenvectors</span>
+vals, vecs = np.linalg.eig(A)
+<span class="fn">print</span>(vals)
+<span class="fn">print</span>(vecs)
+
+<span class="cm"># Solve system Ax = b</span>
+b = np.array([<span class="nm">1</span>, <span class="nm">2</span>])
+x = np.linalg.solve(A, b)
+<span class="fn">print</span>(x)
+
+<span class="cm"># Norms</span>
+<span class="fn">print</span>(np.linalg.norm(A))         <span class="cm"># Frobenius norm</span>
+<span class="fn">print</span>(np.linalg.norm(A, ord=<span class="nm">1</span>)) <span class="cm"># L1 norm</span></pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[[19 22]
+ [43 50]]
+
+[[19 22]
+ [43 50]]
+
+-2.0000000000000004
+
+[[-2.   1. ]
+ [ 1.5 -0.5]]
+
+[-0.37228132  5.37228132]
+
+[[-0.82456484 -0.41597356]
+ [ 0.56576746 -0.90937671]]
+
+[ 0.  0.5]
+
+5.477225575051661
+6.0</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 11 ─────────────────────────────────── -->
+<div class="section" id="s11">
+  <div class="section-title"><span class="num">11</span> Random Module</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>rng = np.random.default_rng(seed=<span class="nm">42</span>)   <span class="cm"># recommended generator</span>
+
+<span class="fn">print</span>(rng.random((<span class="nm">2</span>, <span class="nm">3</span>)))             <span class="cm"># uniform [0, 1)</span>
+<span class="fn">print</span>(rng.integers(<span class="nm">0</span>, <span class="nm">10</span>, size=<span class="nm">5</span>))   <span class="cm"># random ints</span>
+<span class="fn">print</span>(rng.normal(<span class="nm">0</span>, <span class="nm">1</span>, size=<span class="nm">5</span>))       <span class="cm"># standard normal</span>
+<span class="fn">print</span>(rng.choice([<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>,<span class="nm">40</span>], <span class="nm">3</span>))  <span class="cm"># random choice</span>
+
+a = np.arange(<span class="nm">10</span>)
+rng.shuffle(a)
+<span class="fn">print</span>(a)                               <span class="cm"># shuffled in-place</span></pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[[0.77395605 0.43887844 0.85859792]
+ [0.69736803 0.09417735 0.97562235]]
+
+[0 7 6 4 4]
+
+[-0.1616     1.2302    -0.2533    -0.3339     1.0611]
+
+[10 40 10]
+
+[4 8 3 7 0 2 9 5 1 6]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 12 ─────────────────────────────────── -->
+<div class="section" id="s12">
+  <div class="section-title"><span class="num">12</span> Sorting &amp; Searching</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, <span class="nm">2</span>, <span class="nm">6</span>])
+
+<span class="fn">print</span>(np.sort(a))               <span class="cm"># returns sorted copy</span>
+<span class="fn">print</span>(np.argsort(a))            <span class="cm"># indices that would sort</span>
+
+<span class="fn">print</span>(np.unique(a))             <span class="cm"># unique values</span>
+vals, counts = np.unique(a, return_counts=<span class="kw">True</span>)
+<span class="fn">print</span>(vals, counts)             <span class="cm"># values and their counts</span>
+
+<span class="cm"># Searching</span>
+<span class="fn">print</span>(np.searchsorted([<span class="nm">1</span>,<span class="nm">3</span>,<span class="nm">5</span>,<span class="nm">7</span>], <span class="nm">4</span>))  <span class="cm"># insertion index</span>
+
+<span class="cm"># 2D sort along axis</span>
+m = np.array([[<span class="nm">3</span>,<span class="nm">1</span>],[<span class="nm">2</span>,<span class="nm">4</span>]])
+<span class="fn">print</span>(np.sort(m, axis=<span class="nm">1</span>))</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[1 1 2 3 4 5 6 9]
+[1 3 6 0 2 4 7 5]
+[1 2 3 4 5 6 9]
+[1 2 3 4 5 6 9] [2 1 1 1 1 1 1]
+2
+[[1 3]
+ [2 4]]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 13 ─────────────────────────────────── -->
+<div class="section" id="s13">
+  <div class="section-title"><span class="num">13</span> Stacking &amp; Splitting</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+b = np.array([<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+
+<span class="fn">print</span>(np.hstack([a, b]))         <span class="cm"># horizontal stack</span>
+<span class="fn">print</span>(np.vstack([a, b]))         <span class="cm"># vertical stack</span>
+<span class="fn">print</span>(np.stack([a, b], axis=<span class="nm">1</span>)) <span class="cm"># new axis</span>
+<span class="fn">print</span>(np.concatenate([a, b]))    <span class="cm"># general concatenation</span>
+
+<span class="cm"># Splitting</span>
+c = np.arange(<span class="nm">12</span>)
+parts = np.split(c, <span class="nm">3</span>)          <span class="cm"># split into 3 equal parts</span>
+<span class="fn">print</span>(parts)
+
+d = np.arange(<span class="nm">9</span>).reshape(<span class="nm">3</span>,<span class="nm">3</span>)
+<span class="fn">print</span>(np.hsplit(d, <span class="nm">3</span>))          <span class="cm"># split columns</span></pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[1 2 3 4 5 6]
+
+[[1 2 3]
+ [4 5 6]]
+
+[[1 4]
+ [2 5]
+ [3 6]]
+
+[1 2 3 4 5 6]
+
+[array([0, 1, 2, 3]), array([4, 5, 6, 7]), array([8, 9, 10, 11])]
+
+[array([[0],[3],[6]]), array([[1],[4],[7]]), array([[2],[5],[8]])]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 14 ─────────────────────────────────── -->
+<div class="section" id="s14">
+  <div class="section-title"><span class="num">14</span> Data Types &amp; Casting</div>
+  <table>
+    <tr><th>dtype</th><th>Description</th><th>Example</th></tr>
+    <tr><td>int8 / int16 / int32 / int64</td><td>Signed integers</td><td>np.array([1,2], dtype=np.int32)</td></tr>
+    <tr><td>uint8 / uint16 / uint32 / uint64</td><td>Unsigned integers</td><td>np.array([0,255], dtype=np.uint8)</td></tr>
+    <tr><td>float16 / float32 / float64</td><td>Floating point</td><td>np.array([1.0], dtype=np.float32)</td></tr>
+    <tr><td>complex64 / complex128</td><td>Complex numbers</td><td>np.array([1+2j])</td></tr>
+    <tr><td>bool</td><td>Boolean</td><td>np.array([True, False])</td></tr>
+    <tr><td>str_ / bytes_</td><td>Strings</td><td>np.array(['hello'])</td></tr>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre><span class="cm"># Specifying dtype on creation</span>
+a = np.array([<span class="nm">1.7</span>, <span class="nm">2.9</span>, <span class="nm">3.1</span>], dtype=np.int32)
+<span class="fn">print</span>(a)              <span class="cm"># truncates float → int</span>
+
+<span class="cm"># Type casting</span>
+b = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+<span class="fn">print</span>(b.astype(np.float64))
+<span class="fn">print</span>(b.astype(str))</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[1 2 3]
+
+[1. 2. 3.]
+
+['1' '2' '3']</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 15 ─────────────────────────────────── -->
+<div class="section" id="s15">
+  <div class="section-title"><span class="num">15</span> Saving &amp; Loading</div>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+b = np.array([[<span class="nm">4</span>, <span class="nm">5</span>], [<span class="nm">6</span>, <span class="nm">7</span>]])
+
+<span class="cm"># Save / load single array (binary)</span>
+np.save(<span class="st">'array.npy'</span>, a)
+loaded = np.load(<span class="st">'array.npy'</span>)
+<span class="fn">print</span>(loaded)
+
+<span class="cm"># Save multiple arrays</span>
+np.savez(<span class="st">'arrays.npz'</span>, arr1=a, arr2=b)
+data = np.load(<span class="st">'arrays.npz'</span>)
+<span class="fn">print</span>(data[<span class="st">'arr1'</span>], data[<span class="st">'arr2'</span>])
+
+<span class="cm"># Save as text (CSV-like)</span>
+np.savetxt(<span class="st">'data.csv'</span>, b, delimiter=<span class="st">','</span>)
+loaded_txt = np.loadtxt(<span class="st">'data.csv'</span>, delimiter=<span class="st">','</span>)
+<span class="fn">print</span>(loaded_txt)</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>[1 2 3]
+
+[1 2 3]  [[4 5]
+          [6 7]]
+
+[[4. 5.]
+ [6. 7.]]</pre>
+  </div>
+
+  <div class="tip-box" style="margin-top:24px">
+    <strong>💡 Pro Tips</strong><br>
+    • Use <code>np.save</code>/<code>np.load</code> for fast binary I/O.<br>
+    • Use <code>np.savetxt</code>/<code>np.loadtxt</code> only for small text files or sharing with non-Python tools.<br>
+    • Prefer <code>np.random.default_rng(seed)</code> over the legacy <code>np.random.seed()</code> for reproducibility.<br>
+    • Slices are <strong>views</strong>, not copies — modifying them modifies the original. Use <code>.copy()</code> to be safe.
+  </div>
+</div>
+
+
+<!-- ─── SECTION 16 ─────────────────────────────────── -->
+<div class="section" id="s16">
+  <div class="section-title"><span class="num">16</span> Masked Arrays</div>
+  <p>Masked arrays let you mark certain values as invalid (e.g. missing data, sentinel values) and exclude them from computations.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre><span class="kw">import</span> numpy.ma <span class="kw">as</span> ma
+
+x = np.array([<span class="nm">1</span>, <span class="nm">2</span>, -<span class="nm">999</span>, <span class="nm">4</span>])
+mask = x == -<span class="nm">999</span>
+mx = ma.masked_array(x, mask=mask)
+
+<span class="fn">print</span>(<span class="st">"x:"</span>, x)
+<span class="fn">print</span>(<span class="st">"mask:"</span>, mask)
+<span class="fn">print</span>(<span class="st">"masked array mx:"</span>, mx)
+<span class="fn">print</span>(<span class="st">"mx.mean():"</span>, mx.mean())   <span class="cm"># ignores masked value</span>
+<span class="fn">print</span>(<span class="st">"mx.sum():"</span>,  mx.sum())
+
+<span class="cm"># Mask values above a threshold</span>
+y = np.array([<span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">2</span>, <span class="nm">8</span>, <span class="nm">3</span>])
+my = ma.masked_where(y > <span class="nm">4</span>, y)
+<span class="fn">print</span>(<span class="st">"my:"</span>, my)
+<span class="fn">print</span>(<span class="st">"my.mean():"</span>, my.mean())</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>x: [   1    2 -999    4]
+mask: [False False  True False]
+masked array mx: [1 2 -- 4]
+mx.mean(): 2.3333333333333335
+mx.sum(): 7
+
+my: [1 -- 2 -- 3]
+my.mean(): 2.0</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 17 ─────────────────────────────────── -->
+<div class="section" id="s17">
+  <div class="section-title"><span class="num">17</span> Performance Tips</div>
+
+  <div class="subsection">
+    <h3>Pre-allocate vs repeated append/concatenate</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># ❌ SLOW — repeated concatenation reallocates memory every loop</span>
+arr_concat = np.array([])
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nm">1000</span>):
+    arr_concat = np.concatenate([arr_concat, np.array([i])])
+
+<span class="cm"># ✅ FAST — pre-allocate once, fill in place</span>
+arr_pre = np.empty(<span class="nm">1000</span>, dtype=int)
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nm">1000</span>):
+    arr_pre[i] = i
+
+<span class="fn">print</span>(<span class="st">"arr_pre[:5]:"</span>, arr_pre[:<span class="nm">5</span>])</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>arr_pre[:5]: [0 1 2 3 4]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Use <code>out=</code> to reuse memory</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.arange(<span class="nm">10</span>, dtype=float)
+b = np.empty_like(a)
+np.multiply(a, <span class="nm">2.5</span>, out=b)   <span class="cm"># writes directly to b, no temp array</span>
+<span class="fn">print</span>(<span class="st">"b:"</span>, b)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>b: [ 0.   2.5  5.   7.5 10.  12.5 15.  17.5 20.  22.5]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Choose the right dtype to save memory</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>big_f64 = np.ones((<span class="nm">1000</span>, <span class="nm">1000</span>), dtype=np.float64)
+big_f32 = np.ones((<span class="nm">1000</span>, <span class="nm">1000</span>), dtype=np.float32)
+
+<span class="fn">print</span>(<span class="st">"float64 nbytes:"</span>, big_f64.nbytes)   <span class="cm"># 8 bytes/element</span>
+<span class="fn">print</span>(<span class="st">"float32 nbytes:"</span>, big_f32.nbytes)   <span class="cm"># 4 bytes/element — half!</span></pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>float64 nbytes: 8000000
+float32 nbytes: 4000000</pre>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>💡 Performance Rules of Thumb</strong><br>
+    • Vectorize everything — eliminate Python loops over array elements.<br>
+    • Pre-allocate with <code>np.empty</code> / <code>np.zeros</code> then fill in place.<br>
+    • Use <code>out=</code> param in ufuncs to avoid temporary arrays.<br>
+    • Use <code>float32</code> instead of <code>float64</code> when precision allows (ML, image data).<br>
+    • Use <code>np.einsum</code> for complex multi-dimensional contractions.<br>
+    • For very tight loops, consider Numba or Cython.
+  </div>
+</div>
+
+<!-- ─── SECTION 18 ─────────────────────────────────── -->
+<div class="section" id="s18">
+  <div class="section-title"><span class="num">18</span> Advanced — Strides, sliding_window_view, einsum, FFT</div>
+
+  <div class="subsection">
+    <h3>Memory layout &amp; strides</h3>
+    <p>Strides describe how many bytes to step in memory for each dimension. Understanding them helps explain views, performance, and C vs Fortran order.</p>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>a = np.arange(<span class="nm">12</span>).reshape(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(<span class="st">"a.flags['C_CONTIGUOUS']:"</span>, a.flags[<span class="st">'C_CONTIGUOUS'</span>])
+<span class="fn">print</span>(<span class="st">"a.strides:"</span>, a.strides)        <span class="cm"># (bytes/row, bytes/col)</span>
+<span class="fn">print</span>(<span class="st">"a.T.strides:"</span>, a.T.strides)
+<span class="fn">print</span>(<span class="st">"a.T.flags['C_CONTIGUOUS']:"</span>, a.T.flags[<span class="st">'C_CONTIGUOUS'</span>])</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>a.flags['C_CONTIGUOUS']: True
+a.strides: (32, 8)
+a.T.strides: (8, 32)
+a.T.flags['C_CONTIGUOUS']: False</pre>
+    </div>
+    <div class="info-box"><strong>Interpretation:</strong> stride (32, 8) means stepping one row = 32 bytes (4 elements × 8 bytes/element), one column = 8 bytes. The transpose is a view with swapped strides — no data is copied.</div>
+  </div>
+
+  <div class="subsection">
+    <h3>sliding_window_view (moving windows)</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="kw">from</span> numpy.lib.stride_tricks <span class="kw">import</span> sliding_window_view
+
+x = np.arange(<span class="nm">10</span>)
+w = sliding_window_view(x, window_shape=<span class="nm">3</span>)
+
+<span class="fn">print</span>(<span class="st">"x:"</span>, x)
+<span class="fn">print</span>(<span class="st">"windows shape:"</span>, w.shape)
+<span class="fn">print</span>(<span class="st">"windows:\n"</span>, w)
+<span class="fn">print</span>(<span class="st">"moving averages:"</span>, w.mean(axis=<span class="nm">1</span>))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>x: [0 1 2 3 4 5 6 7 8 9]
+windows shape: (8, 3)
+windows:
+ [[0 1 2]
+ [1 2 3]
+ [2 3 4]
+ [3 4 5]
+ [4 5 6]
+ [5 6 7]
+ [6 7 8]
+ [7 8 9]]
+moving averages: [1. 2. 3. 4. 5. 6. 7. 8.]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>np.einsum — Einstein summation</h3>
+    <p>einsum expresses many array operations compactly using index notation.</p>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># Outer product of two vectors</span>
+a = np.arange(<span class="nm">3</span>)
+b = np.arange(<span class="nm">4</span>)
+outer = np.einsum(<span class="st">'i,j->ij'</span>, a, b)
+<span class="fn">print</span>(<span class="st">"outer:\n"</span>, outer)
+
+<span class="cm"># Matrix multiplication via einsum</span>
+A = np.arange(<span class="nm">6</span>).reshape(<span class="nm">2</span>, <span class="nm">3</span>)
+B = np.arange(<span class="nm">12</span>).reshape(<span class="nm">3</span>, <span class="nm">4</span>)
+C = np.einsum(<span class="st">'ik,kj->ij'</span>, A, B)
+<span class="fn">print</span>(<span class="st">"A @ B via einsum:\n"</span>, C)
+
+<span class="cm"># Trace (sum of diagonal)</span>
+M = np.arange(<span class="nm">9</span>).reshape(<span class="nm">3</span>,<span class="nm">3</span>)
+<span class="fn">print</span>(<span class="st">"trace:"</span>, np.einsum(<span class="st">'ii->'</span>, M))
+
+<span class="cm"># Batch dot product</span>
+x = np.ones((<span class="nm">5</span>, <span class="nm">3</span>))   <span class="cm"># 5 row vectors</span>
+y = np.ones((<span class="nm">5</span>, <span class="nm">3</span>)) * <span class="nm">2</span>
+<span class="fn">print</span>(<span class="st">"batch dots:"</span>, np.einsum(<span class="st">'ij,ij->i'</span>, x, y))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>outer:
+ [[0 0 0 0]
+ [0 1 2 3]
+ [0 2 4 6]]
+
+A @ B via einsum:
+ [[20 23 26 29]
+ [56 68 80 92]]
+
+trace: 12
+
+batch dots: [6. 6. 6. 6. 6.]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>FFT — Fast Fourier Transform</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="cm"># Simple FFT and inverse</span>
+x = np.array([<span class="nm">0.</span>, <span class="nm">1.</span>, <span class="nm">0.</span>, <span class="nm">0.</span>])
+X = np.fft.fft(x)
+x_rec = np.fft.ifft(X)
+<span class="fn">print</span>(<span class="st">"X:"</span>, X)
+<span class="fn">print</span>(<span class="st">"reconstructed:"</span>, x_rec.real)
+
+<span class="cm"># Frequencies for a real signal</span>
+t = np.linspace(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">500</span>)
+sig = np.sin(<span class="nm">2</span> * np.pi * <span class="nm">50</span> * t) + <span class="nm">0.5</span> * np.sin(<span class="nm">2</span> * np.pi * <span class="nm">120</span> * t)
+freqs = np.fft.fftfreq(len(t), d=t[<span class="nm">1</span>]-t[<span class="nm">0</span>])
+spectrum = np.abs(np.fft.fft(sig))
+peak_freqs = np.abs(freqs[np.argsort(spectrum)[-<span class="nm">4</span>:]])
+<span class="fn">print</span>(<span class="st">"peak frequencies (Hz):"</span>, np.sort(peak_freqs))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>X: [1.+0.j 0.+1.j 1.+0.j 0.-1.j]
+reconstructed: [0. 1. 0. 0.]
+peak frequencies (Hz): [ 50.  50. 120. 120.]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 19 ─────────────────────────────────── -->
+<div class="section" id="s19">
+  <div class="section-title"><span class="num">19</span> Structured Arrays</div>
+  <p>Structured arrays store records with named fields of different types — like a lightweight in-memory table.</p>
+  <div class="code-block">
+    <div class="code-header"><span>Python</span></div>
+    <pre>dt = np.dtype([(<span class="st">'name'</span>, <span class="st">'U10'</span>), (<span class="st">'age'</span>, <span class="st">'i4'</span>), (<span class="st">'weight'</span>, <span class="st">'f8'</span>)])
+data = np.array([(<span class="st">'Alice'</span>, <span class="nm">30</span>, <span class="nm">61.5</span>),
+                 (<span class="st">'Bob'</span>,   <span class="nm">25</span>, <span class="nm">72.2</span>)], dtype=dt)
+
+<span class="fn">print</span>(<span class="st">"data:"</span>, data)
+<span class="fn">print</span>(<span class="st">"data['name']:"</span>, data[<span class="st">'name'</span>])
+<span class="fn">print</span>(<span class="st">"data['age']:"</span>,  data[<span class="st">'age'</span>])
+
+<span class="cm"># Filter by field</span>
+<span class="fn">print</span>(<span class="st">"people over 26:"</span>, data[data[<span class="st">'age'</span>] > <span class="nm">26</span>])</pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>data: [('Alice', 30, 61.5) ('Bob', 25, 72.2)]
+data['name']: ['Alice' 'Bob']
+data['age']:  [30 25]
+people over 26: [('Alice', 30, 61.5)]</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 20 ─────────────────────────────────── -->
+<div class="section" id="s20">
+  <div class="section-title"><span class="num">20</span> Common Pitfalls &amp; Gotchas</div>
+
+  <table>
+    <tr><th>Pitfall</th><th>Example / Explanation</th><th>Fix</th></tr>
+    <tr>
+      <td>Slices are views</td>
+      <td><code>s = a[2:5]; s[0] = 99</code> mutates <code>a</code></td>
+      <td>Use <code>a[2:5].copy()</code></td>
+    </tr>
+    <tr>
+      <td>Dtype upcasting</td>
+      <td><code>np.array([1, 2.0])</code> → float64 silently</td>
+      <td>Specify <code>dtype=</code> explicitly</td>
+    </tr>
+    <tr>
+      <td>Floating point equality</td>
+      <td><code>0.1 + 0.2 == 0.3</code> → <code>False</code></td>
+      <td>Use <code>np.isclose(a, b)</code></td>
+    </tr>
+    <tr>
+      <td>Repeated concatenation</td>
+      <td><code>np.concatenate</code> in a loop is O(n²)</td>
+      <td>Pre-allocate array, fill in place</td>
+    </tr>
+    <tr>
+      <td>Integer overflow</td>
+      <td><code>np.array([200], dtype=np.int8) * 2</code> → wraps around</td>
+      <td>Use a larger int dtype</td>
+    </tr>
+    <tr>
+      <td>0-d arrays vs scalars</td>
+      <td><code>np.sum(a)</code> returns a 0-d array, not a Python scalar</td>
+      <td>Call <code>.item()</code> to extract scalar</td>
+    </tr>
+    <tr>
+      <td>Modifying function args</td>
+      <td>NumPy functions don't copy by default — in-place ops mutate</td>
+      <td>Pass <code>arr.copy()</code> if needed</td>
+    </tr>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header"><span>Python</span> floating point equality demo</div>
+    <pre><span class="fn">print</span>(<span class="nm">0.1</span> + <span class="nm">0.2</span> == <span class="nm">0.3</span>)                    <span class="cm"># ❌ False!</span>
+<span class="fn">print</span>(np.isclose(<span class="nm">0.1</span> + <span class="nm">0.2</span>, <span class="nm">0.3</span>))           <span class="cm"># ✅ True</span>
+<span class="fn">print</span>(np.allclose([<span class="nm">0.1</span>+<span class="nm">0.2</span>, <span class="nm">1.0</span>], [<span class="nm">0.3</span>, <span class="nm">1.0</span>]))  <span class="cm"># ✅ all close</span></pre>
+  </div>
+  <div class="output-block">
+    <div class="output-header">▶ Output</div>
+    <pre>False
+True
+True</pre>
+  </div>
+</div>
+
+<!-- ─── SECTION 21 ─────────────────────────────────── -->
+<div class="section" id="s21">
+  <div class="section-title"><span class="num">21</span> Exercises with Answers</div>
+
+  <div class="subsection">
+    <h3>Exercise 1 — Subtract row mean (de-mean a matrix)</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>M = np.arange(<span class="nm">1</span>, <span class="nm">101</span>).reshape(<span class="nm">10</span>, <span class="nm">10</span>)
+result = M - M.mean(axis=<span class="nm">1</span>, keepdims=<span class="kw">True</span>)   <span class="cm"># keepdims preserves shape for broadcast</span>
+<span class="fn">print</span>(result.shape)
+<span class="fn">print</span>(result[<span class="nm">0</span>, :<span class="nm">5</span>])</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>(10, 10)
+[-4.5 -3.5 -2.5 -1.5 -0.5]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 2 — Moving average with sliding_window_view</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre><span class="kw">from</span> numpy.lib.stride_tricks <span class="kw">import</span> sliding_window_view
+x = np.arange(<span class="nm">10</span>)
+k = <span class="nm">3</span>
+mov_avg = sliding_window_view(x, k).mean(axis=<span class="nm">1</span>)
+<span class="fn">print</span>(mov_avg)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>[1. 2. 3. 4. 5. 6. 7. 8.]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 3 — Pairwise Euclidean distances</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>X = np.array([[<span class="nm">0</span>, <span class="nm">0</span>], [<span class="nm">3</span>, <span class="nm">4</span>], [<span class="nm">6</span>, <span class="nm">8</span>]])
+Xsq = (X ** <span class="nm">2</span>).sum(axis=<span class="nm">1</span>)
+d2 = Xsq[:, <span class="kw">None</span>] + Xsq[<span class="kw">None</span>, :] - <span class="nm">2</span> * X @ X.T   <span class="cm"># broadcast trick</span>
+d = np.sqrt(np.maximum(d2, <span class="nm">0</span>))                    <span class="cm"># clip float errors to 0</span>
+<span class="fn">print</span>(<span class="st">"d:\n"</span>, d)</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>d:
+ [[ 0.  5. 10.]
+ [ 5.  0.  5.]
+ [10.  5.  0.]]</pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>Exercise 4 — Top-3 values per row (argpartition)</h3>
+    <div class="code-block">
+      <div class="code-header"><span>Python</span></div>
+      <pre>arr = np.array([[<span class="nm">10</span>, <span class="nm">30</span>, <span class="nm">20</span>, <span class="nm">40</span>],
+                [<span class="nm">5</span>,  <span class="nm">1</span>,  <span class="nm">3</span>,  <span class="nm">4</span>]])
+
+<span class="cm"># argpartition is O(n), faster than full sort for k-top queries</span>
+idx = np.argpartition(arr, -<span class="nm">3</span>, axis=<span class="nm">1</span>)[:, -<span class="nm">3</span>:]
+result = np.take_along_axis(idx,
+             np.argsort(-np.take_along_axis(arr, idx, axis=<span class="nm">1</span>)),
+             axis=<span class="nm">1</span>)
+
+<span class="fn">print</span>(<span class="st">"top3 indices per row:\n"</span>, result)
+<span class="fn">print</span>(<span class="st">"top3 values per row:\n"</span>, np.take_along_axis(arr, result, axis=<span class="nm">1</span>))</pre>
+    </div>
+    <div class="output-block">
+      <div class="output-header">▶ Output</div>
+      <pre>top3 indices per row:
+ [[3 1 2]
+ [0 3 2]]
+top3 values per row:
+ [[40 30 20]
+ [ 5  4  3]]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 22 ─────────────────────────────────── -->
+<div class="section" id="s22">
+  <div class="section-title"><span class="num">22</span> Mini-Project Ideas &amp; Where to Go Next</div>
+
+  <div class="subsection">
+    <h3>🔬 Mini-Project Ideas</h3>
+    <table>
+      <tr><th>Project</th><th>Key NumPy features used</th></tr>
+      <tr><td>Image processing (grayscale, blur, histogram equalization)</td><td>2D arrays, slicing, ufuncs, uint8 dtype</td></tr>
+      <tr><td>Vectorized k-means clustering</td><td>Broadcasting, pairwise distances, argmin, random</td></tr>
+      <tr><td>N-Body physics simulation</td><td>einsum, broadcasting, cumsum, float32 vs float64</td></tr>
+      <tr><td>Moving average / signal filtering</td><td>sliding_window_view, FFT, convolve</td></tr>
+      <tr><td>Monte Carlo π estimation</td><td>random, vectorized comparisons, mean</td></tr>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>📚 Where to Go Next</h3>
+    <table>
+      <tr><th>Library</th><th>What it adds</th></tr>
+      <tr><td><strong>SciPy</strong></td><td>Optimization, signal processing, statistics, sparse matrices</td></tr>
+      <tr><td><strong>pandas</strong></td><td>Labeled tabular data (DataFrames), group-by, time series</td></tr>
+      <tr><td><strong>Matplotlib</strong></td><td>Plotting arrays — histograms, imshow, scatter, line plots</td></tr>
+      <tr><td><strong>scikit-learn</strong></td><td>Machine learning on NumPy arrays</td></tr>
+      <tr><td><strong>Numba</strong></td><td>JIT-compile Python+NumPy to native machine code</td></tr>
+      <tr><td><strong>Cython</strong></td><td>Write C extensions using Python-like syntax</td></tr>
+      <tr><td><strong>PyTorch / TensorFlow</strong></td><td>GPU-accelerated arrays for deep learning</td></tr>
+    </table>
+    <div class="tip-box" style="margin-top:18px">
+      <strong>📖 Official resources:</strong> numpy.org/doc · numpy.org/learn · github.com/numpy/numpy
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="text-align:center; padding: 40px; color: #475569; font-size: 0.85rem;">
+  NumPy Full Tutorial (22 Sections) — Generated with Claude · numpy.org for full documentation
+</div>
+
+</body>
+</html>
