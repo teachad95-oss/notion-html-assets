@@ -8,14 +8,14 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 40px auto;
-            max-width: 650px;
+            max-width: 800px;
             line-height: 1.6;
             font-size: 16px;
             color: #333;
             padding: 0 20px;
         }
         h1, h2, h3 { line-height: 1.2; }
-        a { color: #0077cd; text-decoration: none; }
+        a { color: #0077cd; text-decoration: none; word-break: break-all; }
         a:hover { text-decoration: underline; }
         .list-group {
             list-style-type: none;
@@ -27,6 +27,13 @@
             background-color: #f9f9f9;
             border-radius: 4px;
         }
+        .folder {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -34,11 +41,66 @@
     <p>This repository hosts the static HTML versions of tutorial notebooks to be embedded in Notion.</p>
 
     <h2>Available Files</h2>
+    <div class="folder">Machine Learning\Classification</div>
     <ul class="list-group">
-        <li><a href="matplotlib_tutorial.html">Matplotlib Tutorial</a></li>
-        <li><a href="numpy_tutorial.html">NumPy Tutorial</a></li>
-        <li><a href="pandas_tutorial.html">Pandas Tutorial</a></li>
-        <li><a href="seaborn_tutorial.html">Seaborn Tutorial</a></li>
+        <li><a href="Machine%20Learning/Classification/03a_LAB_Logistic_Regression_Error_Metrics.html">03a_LAB_Logistic_Regression_Error_Metrics.html</a></li>
+        <li><a href="Machine%20Learning/Classification/03b_LAB_KNN.html">03b_LAB_KNN.html</a></li>
+        <li><a href="Machine%20Learning/Classification/03c_DEMO_SVM.html">03c_DEMO_SVM.html</a></li>
+        <li><a href="Machine%20Learning/Classification/03d_LAB_Decision_Trees.html">03d_LAB_Decision_Trees.html</a></li>
+        <li><a href="Machine%20Learning/Classification/03e_DEMO_Bagging.html">03e_DEMO_Bagging.html</a></li>
+        <li><a href="Machine%20Learning/Classification/03f_LAB_Boosting_and_Stacking.html">03f_LAB_Boosting_and_Stacking.html</a></li>
+        <li><a href="Machine%20Learning/Classification/ML0101EN-Clas-K-Nearest-neighbors-CustCat.html">ML0101EN-Clas-K-Nearest-neighbors-CustCat.html</a></li>
+        <li><a href="Machine%20Learning/Classification/ML0101EN-Clas-SVM-cancer.html">ML0101EN-Clas-SVM-cancer.html</a></li>
+    </ul>
+    <div class="folder">Machine Learning\Clustering</div>
+    <ul class="list-group">
+        <li><a href="Machine%20Learning/Clustering/04a_LAB_KMeansClustering.html">04a_LAB_KMeansClustering.html</a></li>
+        <li><a href="Machine%20Learning/Clustering/04b_DEMO_Distance_Dimensionality.html">04b_DEMO_Distance_Dimensionality.html</a></li>
+        <li><a href="Machine%20Learning/Clustering/04c_LAB_Clustering_Methods.html">04c_LAB_Clustering_Methods.html</a></li>
+        <li><a href="Machine%20Learning/Clustering/04d_DEMO_Dimensionality_Reduction.html">04d_DEMO_Dimensionality_Reduction.html</a></li>
+        <li><a href="Machine%20Learning/Clustering/04e_DEMO_nmf.html">04e_DEMO_nmf.html</a></li>
+        <li><a href="Machine%20Learning/Clustering/ML0101EN-Clus-Hierarchical-Cars.html">ML0101EN-Clus-Hierarchical-Cars.html</a></li>
+    </ul>
+    <div class="folder">Machine Learning\Deep Learning</div>
+    <ul class="list-group">
+        <li><a href="Machine%20Learning/Deep%20Learning/05a_DEMO_Gradient_Descent.html">05a_DEMO_Gradient_Descent.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05b_LAB_Intro_NN.html">05b_LAB_Intro_NN.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05c_DEMO_Backpropagation.html">05c_DEMO_Backpropagation.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05d_LAB_Keras_Intro.html">05d_LAB_Keras_Intro.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05e_DEMO_CNN.html">05e_DEMO_CNN.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05f_DEMO_Transfer_Learning.html">05f_DEMO_Transfer_Learning.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05g_DEMO_RNN.html">05g_DEMO_RNN.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05h_LAB_Autoencoders.html">05h_LAB_Autoencoders.html</a></li>
+        <li><a href="Machine%20Learning/Deep%20Learning/05i_DEMO_Reinforcement.html">05i_DEMO_Reinforcement.html</a></li>
+    </ul>
+    <div class="folder">Machine Learning\Regression</div>
+    <ul class="list-group">
+        <li><a href="Machine%20Learning/Regression/02a_LAB_Transforming_Target.html">02a_LAB_Transforming_Target.html</a></li>
+        <li><a href="Machine%20Learning/Regression/02b_LAB_Regression_Train_Test_Split.html">02b_LAB_Regression_Train_Test_Split.html</a></li>
+        <li><a href="Machine%20Learning/Regression/02c_DEMO_Cross_Validation.html">02c_DEMO_Cross_Validation.html</a></li>
+        <li><a href="Machine%20Learning/Regression/02d_DEMO_Regularization_and_Gradient_Descent.html">02d_DEMO_Regularization_and_Gradient_Descent.html</a></li>
+        <li><a href="Machine%20Learning/Regression/02e_LAB_Regularization.html">02e_LAB_Regularization.html</a></li>
+        <li><a href="Machine%20Learning/Regression/ML0101EN-Reg-NoneLinearRegression.html">ML0101EN-Reg-NoneLinearRegression.html</a></li>
+    </ul>
+    <div class="folder">Machine Learning\Time Series</div>
+    <ul class="list-group">
+        <li><a href="Machine%20Learning/Time%20Series/06a_LAB_Pandas_TimeSeries.html">06a_LAB_Pandas_TimeSeries.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06b_LAB_Decomposition.html">06b_LAB_Decomposition.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06c_DEMO_Stationarity.html">06c_DEMO_Stationarity.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06d_DEMO_Smoothing.html">06d_DEMO_Smoothing.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06e_DEMO_ARMA.html">06e_DEMO_ARMA.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06f_DEMO_SARIMA_Prophet.html">06f_DEMO_SARIMA_Prophet.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06g_DEMO_Deep_Learning.html">06g_DEMO_Deep_Learning.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/06h_DEMO_Survival.html">06h_DEMO_Survival.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/Time%20Series%20Modelling.html">Time Series Modelling.html</a></li>
+        <li><a href="Machine%20Learning/Time%20Series/Time-Series.html">Time-Series.html</a></li>
+    </ul>
+    <div class="folder">Root</div>
+    <ul class="list-group">
+        <li><a href="matplotlib_tutorial.html">matplotlib_tutorial.html</a></li>
+        <li><a href="numpy_tutorial.html">numpy_tutorial.html</a></li>
+        <li><a href="pandas_tutorial.html">pandas_tutorial.html</a></li>
+        <li><a href="seaborn_tutorial.html">seaborn_tutorial.html</a></li>
     </ul>
 </body>
 </html>
